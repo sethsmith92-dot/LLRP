@@ -609,8 +609,32 @@ input,select,textarea{font-family:inherit;font-size:16px} /* 16px prevents iOS z
   border:2px solid #c89730;border-radius:10px;
   padding:18px;
   max-width:340px;width:100%;
+  max-height:calc(100vh - 40px);overflow-y:auto;
   box-shadow:0 12px 32px rgba(0,0,0,0.75);
 }
+.modal-card.wide{max-width:420px}
+.modal-body{margin-bottom:12px}
+.modal-body textarea{
+  width:100%;
+  background:#f5e9c8;color:#1a1a1a;
+  border:1px solid #5a3825;border-radius:6px;
+  padding:8px 10px;
+  font-family:Menlo,Monaco,Consolas,monospace;
+  font-size:11px;line-height:1.4;
+  resize:vertical;min-height:100px;
+}
+.modal-body .file-btn{
+  display:block;width:100%;text-align:center;
+  padding:10px;margin-top:8px;
+  background:linear-gradient(180deg,#3a6448,#0f4018);
+  color:#f5e9c8;
+  border:1px solid #5a3825;border-radius:6px;
+  font-family:'Arial Black',sans-serif;font-size:12px;font-weight:900;
+  letter-spacing:0.08em;text-transform:uppercase;
+  cursor:pointer;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.5);
+}
+.modal-body .file-btn input{display:none}
 .modal-msg{
   color:#f5e9c8;font-size:15px;line-height:1.5;
   margin-bottom:14px;font-weight:600;
@@ -707,6 +731,9 @@ button,select,.cell-select,.pos-toggle,.tab-btn,.team-btn,.pc-num,.pc-del,.pc-to
           <button onclick="createTeam();closeTeamMenu()">+ New team</button>
           <button onclick="renameTeam();closeTeamMenu()">Rename team</button>
           <button class="danger" onclick="deleteTeam();closeTeamMenu()">Delete team</button>
+          <div style="height:1px;background:rgba(212,160,23,0.35);margin:6px 4px"></div>
+          <button onclick="exportData();closeTeamMenu()">&#11015; Export all data</button>
+          <button onclick="importData();closeTeamMenu()">&#11014; Import data</button>
         </div>
       </div>
     </div>
@@ -870,9 +897,10 @@ button,select,.cell-select,.pos-toggle,.tab-btn,.team-btn,.pc-num,.pc-del,.pc-to
 
 <!-- In-app modal (replaces native alert/confirm/prompt) -->
 <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true">
-  <div class="modal-card">
+  <div class="modal-card" id="modalCard">
     <div class="modal-msg" id="modalMsg"></div>
     <input type="text" class="modal-input" id="modalInput" style="display:none" autocomplete="off" autocapitalize="words">
+    <div class="modal-body" id="modalBody" style="display:none"></div>
     <div class="modal-actions" id="modalActions"></div>
   </div>
 </div>
@@ -933,6 +961,8 @@ function _modalShow(opts){
   return new Promise(resolve=>{
     _modalResolver=resolve;
     document.getElementById('modalMsg').textContent=opts.msg||'';
+    const card=document.getElementById('modalCard');
+    card.classList.toggle('wide',!!opts.wide);
     const inp=document.getElementById('modalInput');
     if(opts.input){
       inp.style.display='';
@@ -940,6 +970,14 @@ function _modalShow(opts){
       setTimeout(()=>{try{inp.focus();inp.select();}catch(_){}},60);
     }else{
       inp.style.display='none';
+    }
+    const body=document.getElementById('modalBody');
+    if(opts.bodyHTML){
+      body.style.display='';
+      body.innerHTML=opts.bodyHTML;
+    }else{
+      body.style.display='none';
+      body.innerHTML='';
     }
     const actions=document.getElementById('modalActions');
     actions.innerHTML='';
@@ -952,12 +990,14 @@ function _modalShow(opts){
       actions.appendChild(btn);
     });
     document.getElementById('modalBackdrop').classList.add('open');
-    // Enter submits primary, Escape cancels
     if(opts.input){
       inp.onkeydown=ev=>{
         if(ev.key==='Enter'){ev.preventDefault();_modalResolve(true);}
         else if(ev.key==='Escape'){ev.preventDefault();_modalResolve(false);}
       };
+    }
+    if(typeof opts.onShow==='function'){
+      try{opts.onShow();}catch(_){}
     }
   });
 }
@@ -2196,6 +2236,119 @@ async function mergePlayerInCurrentTeam(){
   }
   saveData(); refreshTeamUI();
   flashMsg(`Merged ${touched} entr${touched===1?'y':'ies'}: "${from}" → "${to}".`,'success');
+}
+
+/* =================================================================
+   EXPORT / IMPORT — backup data between devices
+   ================================================================= */
+function _esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+async function exportData(){
+  const json=JSON.stringify(DATA,null,2);
+  const teamCount=Object.keys(DATA.teams||{}).length;
+  const gameCount=Object.values(DATA.teams||{}).reduce((n,t)=>n+((t&&t.games)||[]).length,0);
+  const action=await _modalShow({
+    msg:`Backup contains ${teamCount} team${teamCount===1?'':'s'} and ${gameCount} saved game${gameCount===1?'':'s'}.`,
+    wide:true,
+    bodyHTML:`<textarea id="exportArea" readonly>${_esc(json)}</textarea>`,
+    onShow:()=>{
+      const ta=document.getElementById('exportArea');
+      if(ta){setTimeout(()=>{try{ta.focus();ta.select();}catch(_){}},80);}
+    },
+    buttons:[
+      {label:'Cancel',value:false,kind:'secondary'},
+      {label:'Copy',value:'copy',kind:'primary'},
+      {label:'Download',value:'download',kind:'primary'}
+    ]
+  });
+  if(action==='download'){
+    const blob=new Blob([json],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=`rotation-planner-backup-${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},120);
+    flashMsg('Backup file downloaded.','success');
+  }else if(action==='copy'){
+    let ok=false;
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        await navigator.clipboard.writeText(json); ok=true;
+      }
+    }catch(_){}
+    if(!ok){
+      try{
+        const ta=document.createElement('textarea');
+        ta.value=json; ta.style.position='fixed'; ta.style.left='-9999px';
+        document.body.appendChild(ta); ta.select();
+        ok=document.execCommand('copy'); ta.remove();
+      }catch(_){}
+    }
+    flashMsg(ok?'Backup copied to clipboard.':'Couldn’t copy — long-press the text and Copy manually.', ok?'success':'warn');
+  }
+}
+
+async function importData(){
+  const action=await _modalShow({
+    msg:'Replace ALL existing data on this device.\n\nPaste backup JSON below, or pick a backup file. This overwrites every team, roster, and saved game on this device and cannot be undone.',
+    wide:true,
+    bodyHTML:`
+      <textarea id="importArea" placeholder="Paste backup JSON here, or use Choose file below…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+      <label class="file-btn">Choose backup file…
+        <input type="file" id="importFile" accept="application/json,.json,.txt">
+      </label>
+    `,
+    onShow:()=>{
+      const fileInput=document.getElementById('importFile');
+      const ta=document.getElementById('importArea');
+      if(!fileInput||!ta) return;
+      fileInput.addEventListener('change',e=>{
+        const f=e.target.files && e.target.files[0];
+        if(!f) return;
+        const reader=new FileReader();
+        reader.onload=()=>{ ta.value=String(reader.result||''); };
+        reader.onerror=()=>{ flashMsg('Could not read that file.','warn'); };
+        reader.readAsText(f);
+      });
+    },
+    buttons:[
+      {label:'Cancel',value:false,kind:'secondary'},
+      {label:'Replace data',value:'import',kind:'danger'}
+    ]
+  });
+  if(action!=='import') return;
+  const raw=(document.getElementById('importArea')?.value||'').trim();
+  if(!raw){ await uiAlert('Nothing to import — paste your backup JSON or pick a file first.'); return; }
+  let parsed;
+  try{ parsed=JSON.parse(raw); }
+  catch(e){ await uiAlert('That doesn’t look like valid backup JSON. Check that you copied the entire contents.'); return; }
+  if(!parsed||typeof parsed!=='object'||!parsed.teams||typeof parsed.teams!=='object'){
+    await uiAlert('Backup is missing the expected "teams" data. Make sure you exported from the rotation planner.');
+    return;
+  }
+  const teamCount=Object.keys(parsed.teams).length;
+  const gameCount=Object.values(parsed.teams).reduce((n,t)=>n+((t&&t.games)||[]).length,0);
+  if(!(await uiConfirm(`Found ${teamCount} team${teamCount===1?'':'s'} and ${gameCount} saved game${gameCount===1?'':'s'} in the backup.\n\nReplace everything on this device?`,{okLabel:'Replace',danger:true}))) return;
+  DATA=parsed;
+  if(!DATA.teams||typeof DATA.teams!=='object') DATA.teams={};
+  if(DATA.currentTeamId && !DATA.teams[DATA.currentTeamId]){
+    const ids=Object.keys(DATA.teams); DATA.currentTeamId=ids[0]||null;
+  }
+  saveData();
+  if(DATA.currentTeamId && DATA.teams[DATA.currentTeamId] && DATA.teams[DATA.currentTeamId].roster){
+    loadRosterIntoForm(DATA.teams[DATA.currentTeamId].roster);
+    loadManualCells(DATA.teams[DATA.currentTeamId].manualCells||DATA.teams[DATA.currentTeamId].locks||[]);
+    loadRulesIntoForm(DATA.teams[DATA.currentTeamId].rules);
+  }else{
+    document.getElementById('rosterRows').innerHTML='';
+    SAMPLE.forEach(n=>addRow(n));
+    manualCells=[];
+  }
+  syncOFLabels();
+  refreshTeamUI();
+  flashMsg(`Imported ${teamCount} team(s) and ${gameCount} game(s).`,'success');
 }
 
 /* =================================================================
