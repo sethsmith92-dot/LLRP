@@ -1,0 +1,2438 @@
+
+<style>
+/* =========================================================
+   FENWAY PARK — GREEN MONSTER SCOREBOARD AESTHETIC
+   Dark forest-green wall, cream/gold lettering, red trim,
+   wooden-frame panels, beveled metal scoreboard tiles.
+   ========================================================= */
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  background:
+    radial-gradient(ellipse at top,#0e4329 0%,#082818 70%,#041a0e 100%),
+    #082818;
+  min-height:100vh;
+  color:#f5e9c8;
+}
+h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.app{padding:1rem;max-width:1400px;margin:0 auto}
+
+/* ---------- HEADER: top of the Green Monster ---------- */
+.header{
+  background:
+    linear-gradient(180deg,#0a2818 0%,#0a3823 50%,#072010 100%);
+  border:3px solid #c89730;
+  border-radius:6px;
+  padding:1.5rem 2rem;
+  margin-bottom:1.25rem;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  position:relative;
+  box-shadow:
+    0 8px 24px rgba(0,0,0,0.55),
+    inset 0 2px 0 rgba(255,255,255,0.08),
+    inset 0 -2px 0 rgba(0,0,0,0.4);
+}
+.header::before{
+  content:'';position:absolute;top:5px;left:5px;right:5px;bottom:5px;
+  border:1px solid rgba(212,160,23,0.4);
+  border-radius:3px;pointer-events:none;
+}
+.header-icon{
+  font-size:34px;line-height:1;color:#d4a017;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,0.6));
+}
+.header h1{
+  font-family:'Arial Black','Helvetica Neue',Impact,sans-serif;
+  font-size:28px;font-weight:900;
+  color:#f5e9c8;
+  letter-spacing:0.12em;text-transform:uppercase;
+  text-shadow:2px 2px 0 #000,0 0 10px rgba(212,160,23,0.35);
+}
+.header p{
+  font-size:11px;color:#d4a017;margin-top:5px;
+  font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+}
+
+/* ---------- SECTIONS: wooden-framed scoreboard panels ---------- */
+.section{
+  background:
+    linear-gradient(180deg,#0f4a2d 0%,#0a3823 50%,#082818 100%);
+  border:2px solid #5a3825;
+  border-radius:5px;
+  padding:1.25rem 1.5rem;
+  margin-bottom:1rem;
+  color:#f5e9c8;
+  box-shadow:
+    0 4px 14px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.07),
+    inset 0 -1px 0 rgba(0,0,0,0.3);
+}
+.section-title{
+  font-family:'Arial Black','Helvetica Neue',Impact,sans-serif;
+  font-size:14px;font-weight:900;
+  color:#d4a017;
+  text-transform:uppercase;letter-spacing:0.18em;
+  margin-bottom:1rem;padding-bottom:8px;
+  border-bottom:2px solid #5a3825;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.55);
+}
+
+/* ---------- FORM INPUTS: parchment / vintage ---------- */
+input[type=text],input[type=number],input[type=date],select{
+  background:#f5e9c8;
+  border:1px solid #5a3825;
+  color:#1a1a1a;
+  font-family:'Helvetica Neue',Arial,sans-serif;
+  font-weight:600;
+  padding:6px 8px;
+  border-radius:3px;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,0.2);
+}
+input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,select:focus{
+  outline:2px solid #d4a017;outline-offset:0;
+}
+.settings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.field-group{display:flex;flex-direction:column;gap:6px}
+.field-group label{
+  font-family:'Arial Black',sans-serif;
+  font-size:10px;color:#d4a017;font-weight:900;
+  text-transform:uppercase;letter-spacing:0.1em;
+}
+.field-group input[type=number]{width:100%}
+
+/* ---------- ROSTER ---------- */
+.roster-header{
+  display:grid;grid-template-columns:2rem 1fr repeat(10,1fr) 3.2rem 1.4fr 1.6rem;
+  gap:6px;align-items:center;
+  padding:8px 6px;margin-bottom:8px;
+  background:linear-gradient(180deg,#0a2818,#062012);
+  border:1px solid #5a3825;border-radius:4px;
+  border-bottom:2px solid #d4a017;
+}
+.roster-header span{
+  font-family:'Arial Black',sans-serif;
+  font-size:10px;font-weight:900;
+  color:#d4a017;text-align:center;
+  text-transform:uppercase;letter-spacing:0.08em;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.55);
+}
+.roster-header span:nth-child(2){text-align:left;padding-left:4px}
+.player-row{
+  display:grid;grid-template-columns:2rem 1fr repeat(10,1fr) 3.2rem 1.4fr 1.6rem;
+  gap:6px;align-items:center;
+  padding:6px 4px;border-radius:4px;margin-bottom:4px;
+}
+.player-row:nth-child(odd){background:rgba(0,0,0,0.22)}
+.player-row:nth-child(even){background:rgba(255,255,255,0.04)}
+.player-num{
+  font-family:'Arial Black',sans-serif;
+  font-size:13px;color:#d4a017;font-weight:900;
+  text-align:center;cursor:grab;user-select:none;line-height:28px;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.6);
+}
+.player-num:active{cursor:grabbing}
+.player-num::before{
+  content:"\22EE\22EE";display:inline-block;font-size:10px;
+  color:rgba(212,160,23,0.55);margin-right:3px;letter-spacing:-2px;vertical-align:middle;
+}
+.player-row input[type=text]{width:100%;font-size:13px;padding:5px 8px;height:30px}
+.player-row input[type=text].notes{font-size:11px}
+.player-row.dragging{opacity:0.4}
+.player-row.drop-above{box-shadow:inset 0 3px 0 0 #d4a017}
+.player-row.drop-below{box-shadow:inset 0 -3px 0 0 #d4a017}
+
+/* ---------- POSITION RESTRICTION TOGGLES (parchment buttons) ---------- */
+.pos-toggle{
+  width:100%;height:30px;
+  border-radius:4px;border:1px solid #5a3825;
+  background:linear-gradient(180deg,#f5e9c8 0%,#d4c4a0 100%);
+  font-family:'Arial Black',sans-serif;
+  font-size:11px;font-weight:900;letter-spacing:0.03em;
+  cursor:pointer;color:#2a1810;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.55),0 1px 2px rgba(0,0,0,0.35);
+  transition:filter .12s;
+}
+.pos-toggle:hover{filter:brightness(1.08)}
+.pos-toggle.restricted{
+  background:linear-gradient(180deg,#d65555 0%,#a02020 100%);
+  border-color:#5a0a0a;color:#fff;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.4);
+}
+.btn-row-del{
+  width:26px;height:26px;border-radius:4px;
+  border:1px solid #5a0a0a;
+  background:linear-gradient(180deg,#d65555 0%,#a02020 100%);
+  color:#fff;cursor:pointer;
+  font-size:14px;font-weight:900;line-height:1;padding:0;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.3),0 2px 3px rgba(0,0,0,0.35);
+}
+.btn-row-del:hover{filter:brightness(1.1)}
+
+/* ---------- BUTTONS ---------- */
+.btn-generate{
+  width:100%;padding:18px;
+  background:linear-gradient(180deg,#e8b626 0%,#c89730 50%,#8c6608 100%);
+  color:#2a1810;border:2px solid #5a3825;border-radius:6px;
+  font-family:'Arial Black',sans-serif;
+  font-size:20px;font-weight:900;
+  letter-spacing:0.15em;text-transform:uppercase;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.4),
+    inset 0 -2px 0 rgba(0,0,0,0.25),
+    0 5px 10px rgba(0,0,0,0.5);
+  text-shadow:1px 1px 0 rgba(255,255,255,0.35);
+  transition:filter .12s,transform .08s;
+}
+.btn-generate:hover{filter:brightness(1.08)}
+.btn-generate:active{
+  transform:translateY(1px);
+  box-shadow:
+    inset 0 2px 4px rgba(0,0,0,0.45),
+    0 2px 4px rgba(0,0,0,0.3);
+}
+.btn-export{
+  width:100%;padding:14px;
+  background:linear-gradient(180deg,#3aa650 0%,#1f6628 50%,#0f4018 100%);
+  color:#f5e9c8;border:2px solid #5a3825;border-radius:5px;
+  font-family:'Arial Black',sans-serif;
+  font-size:14px;font-weight:900;
+  letter-spacing:0.1em;text-transform:uppercase;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;
+  margin-top:12px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.25),
+    inset 0 -1px 0 rgba(0,0,0,0.3),
+    0 4px 8px rgba(0,0,0,0.45);
+  text-shadow:1px 1px 0 rgba(0,0,0,0.5);
+}
+.btn-export:hover{filter:brightness(1.1)}
+.btn-mini{
+  padding:7px 14px;border-radius:4px;
+  border:1px solid #5a3825;
+  background:linear-gradient(180deg,#f5e9c8 0%,#d4c4a0 100%);
+  color:#2a1810;cursor:pointer;
+  font-family:'Arial Black',sans-serif;
+  font-size:11px;font-weight:900;
+  letter-spacing:0.06em;text-transform:uppercase;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.5),0 1px 2px rgba(0,0,0,0.35);
+}
+.btn-mini:hover{filter:brightness(1.08)}
+.btn-save{
+  padding:10px 18px;
+  background:linear-gradient(180deg,#e8b626 0%,#c89730 50%,#8c6608 100%);
+  color:#2a1810;border:1px solid #5a3825;border-radius:4px;
+  cursor:pointer;
+  font-family:'Arial Black',sans-serif;
+  font-size:12px;font-weight:900;
+  letter-spacing:0.08em;text-transform:uppercase;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 2px 4px rgba(0,0,0,0.35);
+  text-shadow:1px 1px 0 rgba(255,255,255,0.3);
+}
+.btn-save:hover{filter:brightness(1.08)}
+.btn-danger{
+  background:linear-gradient(180deg,#d65555 0%,#a02020 100%) !important;
+  color:#fff !important;border-color:#5a0a0a !important;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.4);
+}
+.btn-danger:hover{filter:brightness(1.1)}
+.add-row-btn{
+  font-family:'Arial Black',sans-serif;
+  font-size:11px;font-weight:900;
+  color:#d4a017;background:none;
+  border:1px dashed rgba(212,160,23,0.55);
+  cursor:pointer;padding:7px 14px;margin-top:8px;
+  border-radius:4px;letter-spacing:0.08em;text-transform:uppercase;
+}
+.add-row-btn:hover{background:rgba(212,160,23,0.12)}
+
+/* ---------- MESSAGES ---------- */
+.rule-note{
+  font-size:12px;color:#f5e9c8;
+  background:rgba(212,160,23,0.12);
+  border:1px solid #d4a017;border-radius:4px;
+  padding:10px 14px;margin-bottom:1rem;line-height:1.6;
+}
+.err-msg{
+  color:#fff;font-size:13px;
+  padding:10px 14px;
+  background:linear-gradient(180deg,#c02020 0%,#801010 100%);
+  border-radius:4px;border:1px solid #5a0a0a;margin-bottom:8px;
+  font-weight:700;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.warn-msg{
+  color:#2a1810;font-size:13px;
+  padding:10px 14px;
+  background:linear-gradient(180deg,#f5d24a 0%,#d4a017 100%);
+  border-radius:4px;border:1px solid #8b6f08;margin-bottom:8px;
+  font-weight:700;
+}
+
+/* ---------- TEAM BAR ---------- */
+.team-bar{
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  background:linear-gradient(180deg,#0a2818,#072010);
+  padding:12px 16px;
+  border:2px solid #d4a017;border-radius:5px;
+  margin-bottom:1rem;
+  box-shadow:0 3px 8px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.team-bar label{
+  font-family:'Arial Black',sans-serif;
+  font-size:11px;color:#d4a017;font-weight:900;
+  text-transform:uppercase;letter-spacing:0.1em;
+}
+.team-bar select{flex:1;min-width:200px;padding:7px 12px}
+
+/* ---------- RULES ---------- */
+.rules-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.rule-check{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 14px;border-radius:4px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.12));
+  border:1px solid rgba(212,160,23,0.3);
+}
+.rule-check input[type=checkbox]{
+  margin-top:3px;flex-shrink:0;
+  width:16px;height:16px;
+  accent-color:#d4a017;
+}
+.rule-check label{flex:1;font-size:13px;color:#f5e9c8;cursor:pointer;font-weight:700}
+.rule-check .rule-desc{
+  display:block;font-size:11px;color:#b8a878;margin-top:3px;font-weight:400;
+}
+
+/* =========================================================
+   THE ROTATION SCOREBOARD — beveled 3D tiles, like the
+   metal panels on the Green Monster manual scoreboard.
+   ========================================================= */
+.rotation-table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:4px;
+  font-size:12px;table-layout:fixed;
+  background:
+    linear-gradient(180deg,#062010 0%,#041610 100%);
+  padding:10px;
+  border:3px solid #c89730;
+  border-radius:6px;
+  box-shadow:
+    inset 0 0 30px rgba(0,0,0,0.6),
+    0 6px 16px rgba(0,0,0,0.5);
+}
+.rotation-table th{
+  font-family:'Arial Black','Helvetica Neue',Impact,sans-serif;
+  font-size:11px;font-weight:900;
+  color:#d4a017;
+  padding:8px 4px;text-align:center;
+  background:linear-gradient(180deg,#0a3823,#062010);
+  border:1px solid #5a3825;border-radius:3px;
+  text-transform:uppercase;letter-spacing:0.06em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.7);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.rotation-table th:first-child{
+  text-align:left;width:78px;padding-left:10px;color:#f5e9c8;
+}
+.rotation-table td{
+  padding:0;text-align:center;
+  font-size:12px;font-weight:900;
+}
+.rotation-table td:first-child{
+  text-align:left;
+  font-family:'Arial Black','Helvetica Neue',Impact,sans-serif;
+  font-size:13px;font-weight:900;color:#f5e9c8;
+  padding:8px 10px;
+  background:linear-gradient(180deg,#0a3823,#062010);
+  border:1px solid #5a3825;border-radius:3px;
+  text-transform:uppercase;letter-spacing:0.1em;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.6);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+/* ---------- BEVELED 3D POSITION TILES ---------- */
+.cell-select{
+  appearance:none;-webkit-appearance:none;-moz-appearance:none;
+  font-family:'Arial Black','Helvetica Neue',Impact,sans-serif;
+  font-size:13px;font-weight:900;
+  padding:10px 4px;
+  border:1px solid rgba(0,0,0,0.55);
+  width:100%;min-width:38px;
+  cursor:pointer;
+  border-radius:4px;
+  text-align:center;text-align-last:center;
+  letter-spacing:0.05em;text-transform:uppercase;
+  /* Lighter primary tile color for every FIELD position — distinction still comes from the bevel accent.
+     The .pos-BN rule below overrides the background with a much darker green so bench innings
+     read as "off the field" at a glance. */
+  background:linear-gradient(180deg,#4d7a5e 0%,#3a6448 50%,#244830 100%);
+  color:#f5e9c8;
+  /* Default neutral bevel — each .pos-* class overrides the top-left highlight color. */
+  box-shadow:
+    inset 2px 2px 0 rgba(255,255,255,0.18),
+    inset -2px -2px 0 rgba(0,0,0,0.5),
+    inset 0 0 0 1px rgba(0,0,0,0.2),
+    0 2px 4px rgba(0,0,0,0.5);
+  text-shadow:1px 1px 0 rgba(0,0,0,0.6);
+  transition:filter .12s,transform .08s;
+}
+.cell-select:hover{filter:brightness(1.22)}
+.cell-select:focus{outline:none}
+.cell-select:active{
+  transform:translateY(1px);
+  box-shadow:
+    inset 2px 2px 4px rgba(0,0,0,0.5),
+    inset -1px -1px 0 rgba(255,255,255,0.1),
+    0 1px 2px rgba(0,0,0,0.4);
+}
+.cell-select.locked{
+  box-shadow:
+    inset 2px 2px 0 rgba(255,255,255,0.25),
+    inset -2px -2px 0 rgba(0,0,0,0.5),
+    inset 0 0 0 2px #ffd24a,
+    0 0 8px rgba(255,210,74,0.55),
+    0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Position differentiation lives entirely in the bevel highlight color.
+   All tiles share the same dark slate-green base above, so the chart reads
+   as a unified scoreboard rather than a patchwork of bright colors. */
+.pos-P{
+  box-shadow:
+    inset 2px 2px 0 rgba(245,200,66,0.7),    /* warm gold — pitcher */
+    inset -2px -2px 0 rgba(0,0,0,0.5),
+    inset 0 0 0 1px rgba(0,0,0,0.2),
+    0 2px 4px rgba(0,0,0,0.5);
+}
+.pos-C{
+  box-shadow:
+    inset 2px 2px 0 rgba(120,210,140,0.7),   /* fresh green — catcher */
+    inset -2px -2px 0 rgba(0,0,0,0.5),
+    inset 0 0 0 1px rgba(0,0,0,0.2),
+    0 2px 4px rgba(0,0,0,0.5);
+}
+.pos-1B,.pos-2B,.pos-3B,.pos-SS{
+  box-shadow:
+    inset 2px 2px 0 rgba(120,170,240,0.7),   /* cool blue — infield */
+    inset -2px -2px 0 rgba(0,0,0,0.5),
+    inset 0 0 0 1px rgba(0,0,0,0.2),
+    0 2px 4px rgba(0,0,0,0.5);
+}
+.pos-LF,.pos-LCF,.pos-RCF,.pos-RF{
+  box-shadow:
+    inset 2px 2px 0 rgba(240,140,140,0.7),   /* coral red — outfield */
+    inset -2px -2px 0 rgba(0,0,0,0.5),
+    inset 0 0 0 1px rgba(0,0,0,0.2),
+    0 2px 4px rgba(0,0,0,0.5);
+}
+.pos-BN{
+  /* Dark green base for the bench so it visually reads as "off the field" */
+  background:linear-gradient(180deg,#1a2a20 0%,#0f1812 50%,#050a07 100%);
+  box-shadow:
+    inset 2px 2px 0 rgba(220,210,180,0.18),  /* muted cream — bench (off the field) */
+    inset -2px -2px 0 rgba(0,0,0,0.6),
+    inset 0 0 0 1px rgba(0,0,0,0.3),
+    0 2px 4px rgba(0,0,0,0.55);
+  color:#8a8074;
+}
+
+/* ---------- LEGEND ---------- */
+.legend{
+  display:flex;flex-wrap:wrap;gap:14px;
+  margin-bottom:1rem;padding:12px;
+  background:rgba(0,0,0,0.25);
+  border:1px solid rgba(212,160,23,0.3);
+  border-radius:4px;
+}
+.legend-item{
+  display:flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:700;color:#f5e9c8;
+  text-transform:uppercase;letter-spacing:0.05em;
+}
+.legend-dot{
+  width:30px;height:20px;border-radius:3px;
+  font-family:'Arial Black',sans-serif;
+  font-size:10px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,0.4),
+    inset -1px -1px 0 rgba(0,0,0,0.45);
+  text-shadow:1px 1px 0 rgba(0,0,0,0.45);
+}
+
+/* ---------- BENCH SUMMARY / LOCK CONTROLS / SAVE ROW ---------- */
+.bench-count-row{
+  display:flex;flex-wrap:wrap;align-items:center;gap:6px;
+  font-size:12px;color:#f5e9c8;
+  padding:12px;margin-top:10px;
+  background:rgba(0,0,0,0.28);
+  border:1px solid rgba(212,160,23,0.3);
+  border-radius:4px;
+}
+.lock-controls{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:10px;font-size:11px;
+  color:#b8a878;padding:10px 4px;margin-top:10px;
+}
+.lock-controls .lock-hint{font-size:11px;color:#b8a878;flex:1}
+.save-row{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.save-row label{
+  font-family:'Arial Black',sans-serif;
+  font-size:10px;color:#d4a017;font-weight:900;
+  letter-spacing:0.1em;text-transform:uppercase;
+}
+.save-row input[type=date]{padding:6px 10px;font-size:12px}
+
+/* ---------- TABLES (saved games, season) ---------- */
+.summary-table{width:100%;border-collapse:collapse;font-size:11px}
+.summary-table th{
+  font-family:'Arial Black',sans-serif;
+  font-size:10px;font-weight:900;color:#d4a017;
+  padding:8px 8px;text-align:center;
+  border-bottom:2px solid #5a3825;
+  text-transform:uppercase;letter-spacing:0.06em;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.5);
+}
+.summary-table th:first-child{text-align:left}
+.summary-table td{
+  padding:6px 8px;text-align:center;
+  border-bottom:1px solid rgba(212,160,23,0.18);
+  color:#f5e9c8;font-weight:600;
+}
+.summary-table td:first-child{
+  text-align:left;font-weight:900;color:#f5e9c8;
+}
+.summary-table tr:nth-child(odd) td{background:rgba(0,0,0,0.18)}
+.empty-msg{
+  font-size:12px;color:#b8a878;font-style:italic;
+  padding:14px 0;text-align:center;
+}
+
+/* ---------- LEGACY LOCK ROW (still referenced) ---------- */
+.lock-row{
+  display:flex;gap:8px;align-items:center;
+  padding:6px 4px;border-radius:4px;margin-bottom:4px;
+}
+.lock-row:nth-child(odd){background:rgba(255,255,255,0.04)}
+.lock-row select{padding:5px 8px;font-size:12px}
+.lock-row .lock-player{flex:1;min-width:140px}
+
+/* ---------- SMALL-SCREEN ADJUSTMENTS ---------- */
+@media (max-width:760px){
+  .header h1{font-size:20px}
+  .settings-grid{grid-template-columns:1fr}
+  .btn-generate{font-size:16px;padding:14px}
+}
+
+/* ---------- PRINT BUTTON variant — same shape, slightly different gradient so it reads as a separate action ---------- */
+.btn-print{
+  background:linear-gradient(180deg,#5a8e6e 0%,#3a6448 50%,#1f3826 100%);
+}
+
+/* ---------- MODAL OVERLAY (game viewer for historic games) ---------- */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.72);
+  z-index:1000;
+  display:none;
+  align-items:flex-start;justify-content:center;
+  overflow-y:auto;
+  padding:24px 14px;
+}
+.modal-overlay.open{display:flex}
+.modal-content{
+  background:linear-gradient(180deg,#0f4a2d 0%,#0a3823 50%,#082818 100%);
+  border:3px solid #c89730;
+  border-radius:6px;
+  max-width:1200px;width:100%;
+  padding:18px 22px 16px;
+  color:#f5e9c8;
+  box-shadow:0 14px 44px rgba(0,0,0,0.65),inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.modal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;padding-bottom:10px;
+  border-bottom:2px solid #5a3825;gap:14px;
+}
+.modal-header h3{
+  font-family:'Arial Black',sans-serif;
+  font-size:16px;font-weight:900;
+  color:#d4a017;
+  letter-spacing:0.12em;text-transform:uppercase;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.55);
+}
+.modal-close{
+  background:linear-gradient(180deg,#d65555 0%,#a02020 100%);
+  border:1px solid #5a0a0a;color:#fff;cursor:pointer;
+  width:32px;height:32px;border-radius:4px;
+  font-size:18px;font-weight:900;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.25),0 2px 3px rgba(0,0,0,0.35);
+}
+.modal-close:hover{filter:brightness(1.1)}
+.modal-body{padding:2px 0}
+.modal-footer{
+  display:flex;justify-content:flex-end;gap:10px;
+  margin-top:14px;padding-top:12px;
+  border-top:1px solid rgba(212,160,23,0.3);
+  flex-wrap:wrap;
+}
+#gameViewerMeta{
+  font-size:12px;color:#b8a878;margin-bottom:10px;
+  padding:8px 12px;background:rgba(0,0,0,0.22);
+  border:1px solid rgba(212,160,23,0.25);border-radius:4px;
+}
+#gameViewerMeta strong{color:#d4a017;font-weight:900}
+
+/* =========================================================
+   PRINT VIEW — paper lineup chart (B&W friendly, transposed)
+   On screen: hidden. When printing: replaces the entire page.
+   Each row is a player (in batting order), each column an inning.
+   ========================================================= */
+@media screen{
+  #printLineupView{display:none}
+}
+@media print{
+  body{background:#fff !important;color:#000 !important}
+  .app{display:none !important}
+  .modal-overlay{display:none !important}
+  #printLineupView{display:block !important}
+  @page{size:landscape;margin:0.45in}
+}
+#printLineupView{
+  font-family:Georgia,'Times New Roman',serif;
+  color:#000;background:#fff;
+  padding:0;margin:0;
+}
+#printLineupView .print-header{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  border-bottom:3px double #000;padding-bottom:10px;margin-bottom:14px;gap:24px;
+}
+#printLineupView .print-title{
+  font-size:22px;font-weight:bold;letter-spacing:0.05em;text-transform:uppercase;
+}
+#printLineupView .print-meta{font-size:12px;line-height:1.55;text-align:right;white-space:nowrap}
+#printLineupView .print-meta .lbl{font-weight:bold;display:inline-block;min-width:74px;text-align:right;margin-right:4px}
+#printLineupView .print-lineup-table{
+  width:100%;border-collapse:collapse;font-size:13px;
+}
+#printLineupView .print-lineup-table th,
+#printLineupView .print-lineup-table td{
+  border:1.5px solid #000;
+  padding:8px 6px;
+  text-align:center;
+  vertical-align:middle;
+}
+#printLineupView .print-lineup-table th{
+  background:#cfcfcf;
+  font-weight:bold;text-transform:uppercase;
+  font-size:11px;letter-spacing:0.05em;
+  -webkit-print-color-adjust:exact;
+  print-color-adjust:exact;
+}
+#printLineupView .print-lineup-table th.player,
+#printLineupView .print-lineup-table td.player{
+  text-align:left;padding-left:10px;font-weight:bold;width:auto;
+}
+#printLineupView .print-lineup-table th.num,
+#printLineupView .print-lineup-table td.num{
+  width:32px;font-weight:bold;
+}
+#printLineupView .print-lineup-table tbody tr:nth-child(even) td{
+  background:#f2f2f2;
+  -webkit-print-color-adjust:exact;
+  print-color-adjust:exact;
+}
+#printLineupView .print-lineup-table td.bench-cell{
+  background:#cfcfcf !important;
+  font-style:italic;
+  -webkit-print-color-adjust:exact;
+  print-color-adjust:exact;
+}
+#printLineupView .print-footer{margin-top:18px;font-size:11px}
+#printLineupView .print-notes{margin-bottom:14px}
+#printLineupView .print-notes-box{
+  border:1px solid #000;min-height:80px;margin-top:4px;
+}
+#printLineupView .print-sig-row{display:flex;gap:24px}
+#printLineupView .print-sig{flex:1}
+#printLineupView .print-sig .sig-line{
+  border-bottom:1px solid #000;height:22px;margin-top:4px;
+}
+#printLineupView .lbl{font-weight:bold}
+</style>
+
+<h2 class="sr-only">Little League Defensive Rotation Planner — roster input with one-click rotation generation enforcing no P+C same game, fair bench rotation, no pitcher after catcher</h2>
+<div class="app">
+  <div class="header">
+    <div class="header-icon">&#9918;</div>
+    <div>
+      <h1>Little League Rotation Planner</h1>
+      <p>3 or 4 outfielders &middot; fair bench rotation (no back-to-back, configurable field innings between sits) &middot; balanced IF/OF innings &middot; no P after C &middot; no P &amp; C same game</p>
+    </div>
+  </div>
+
+  <div class="team-bar">
+    <label>Team:</label>
+    <select id="teamSelect" onchange="selectTeam(this.value)"></select>
+    <button class="btn-mini" onclick="createTeam()">+ New team</button>
+    <button class="btn-mini" onclick="renameTeam()">Rename</button>
+    <button class="btn-mini btn-danger" onclick="deleteTeam()">Delete</button>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Game settings</div>
+    <div class="settings-grid">
+      <div class="field-group">
+        <label>Total innings</label>
+        <input type="number" id="innings" value="6" min="1" max="9">
+      </div>
+      <div class="field-group">
+        <label>Pitcher switch every (inn.)</label>
+        <input type="number" id="pitchSwitch" value="2" min="1" max="9">
+      </div>
+      <div class="field-group">
+        <label>Field rotation every (inn.)</label>
+        <input type="number" id="fieldSwitch" value="2" min="1" max="9">
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Rules</div>
+    <div class="rules-grid">
+      <div class="rule-check">
+        <input type="checkbox" id="ruleNoPAfterC" checked>
+        <label for="ruleNoPAfterC">No pitcher the inning right after catching<span class="rule-desc">A player who catches in inning N cannot pitch in inning N+1.</span></label>
+      </div>
+      <div class="rule-check">
+        <input type="checkbox" id="ruleNoPC" checked>
+        <label for="ruleNoPC">No player pitches AND catches in the same game<span class="rule-desc">If on, the pitcher and catcher pools are kept disjoint for the whole game.</span></label>
+      </div>
+      <div class="rule-check">
+        <input type="checkbox" id="ruleFairBench" checked>
+        <label for="ruleFairBench">Fair bench rotation<span class="rule-desc">Nobody sits a second time until everyone has sat once.</span></label>
+      </div>
+      <div class="rule-check">
+        <input type="checkbox" id="ruleNoB2B" checked>
+        <label for="ruleNoB2B">No back-to-back bench innings<span class="rule-desc">A player benched in inning N cannot be benched in inning N+1 (auto-rotation).</span></label>
+      </div>
+      <div class="rule-check">
+        <select id="ruleMinFieldBetweenBench" style="flex-shrink:0;width:auto;min-width:60px;padding:6px 8px;font-size:13px;font-family:'Arial Black',sans-serif;font-weight:900;text-align-last:center" title="Pick the minimum number of field innings required between a player's bench innings">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3" selected>3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+        <label for="ruleMinFieldBetweenBench" style="cursor:default">Min field innings between bench innings<span class="rule-desc">A player can't sit twice in a game unless they play at least the chosen number of innings on the field between their bench innings. Example with 3: a player benched in inning N is bench-eligible again starting inning N+4. Change at any time and click Generate to apply.</span></label>
+      </div>
+      <div class="rule-check">
+        <input type="checkbox" id="ruleBalanceIFOF" checked>
+        <label for="ruleBalanceIFOF">Balance infield and outfield innings<span class="rule-desc">Spread IF and OF totals evenly across players. P and C count as infield.</span></label>
+      </div>
+      <div class="rule-check">
+        <input type="checkbox" id="ruleUse4OF" checked>
+        <label for="ruleUse4OF">Use 4 outfielders<span class="rule-desc">When checked, the field uses 4 outfielders (LF / LCF / RCF / RF). Uncheck for the standard 3-outfielder format (LF / CF / RF) — RCF is dropped, LCF is treated as CF, and the bench grows by one slot per inning.</span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Player roster</div>
+    <div class="rule-note">
+      Toggle positions a player <strong>cannot</strong> play (red = restricted). Use <strong>Bench inn.</strong> to force a player to sit specific innings (e.g. <code>1, 3</code>).<br>
+      Rules are configured in the <strong>Rules</strong> section above &mdash; toggle any rule on or off there. Manual bench picks and position locks always override.
+    </div>
+    <div class="roster-header">
+      <span>#</span><span>Name</span>
+      <span>P</span><span>C</span><span>1B</span><span>2B</span><span>3B</span><span>SS</span>
+      <span>LF</span><span>LCF</span><span>RCF</span><span>RF</span>
+      <span title="Required bench innings — enter how many innings this player must sit, or leave blank for the normal fair-rotation logic. Takes priority over position locks.">Bench</span>
+      <span>Notes</span><span></span>
+    </div>
+    <div id="rosterRows"></div>
+    <button class="add-row-btn" onclick="addRow()">+ add player</button>
+    <div class="save-row">
+      <button class="btn-save" onclick="saveRoster()">&#128190; Save roster to current team</button>
+    </div>
+  </div>
+
+
+  <div id="errMsg"></div>
+  <button class="btn-generate" onclick="generate()">
+    <span style="font-size:18px">&#9654;</span> Generate rotation
+  </button>
+
+  <div id="resultSection" style="display:none;margin-top:1.25rem">
+    <div class="section">
+      <div class="section-title">Rotation schedule</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot pos-P">P</div>Pitcher</div>
+        <div class="legend-item"><div class="legend-dot pos-C">C</div>Catcher</div>
+        <div class="legend-item"><div class="legend-dot pos-1B">IF</div>Infield</div>
+        <div class="legend-item"><div class="legend-dot pos-LF">OF</div>Outfield</div>
+        <div class="legend-item"><div class="legend-dot pos-BN">BN</div>Bench (rotates)</div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="rotation-table" id="rotTable"></table>
+      </div>
+      <div id="benchSummary" class="bench-count-row"></div>
+      <div class="lock-controls">
+        <span class="lock-hint">&#128274; Pick a position to lock a cell — only that inning and later innings adjust around it; earlier innings stay the same. Pick &#128275; Unlock from a locked cell to remove its lock without changing the schedule.</span>
+        <button class="btn-mini btn-danger" id="clearLocksBtn" onclick="clearAllManualCells()">Clear all manual picks</button>
+      </div>
+    </div>
+    <div class="save-row">
+      <label>Game date:</label>
+      <input type="date" id="gameDate">
+      <label>Innings played:</label>
+      <input type="number" id="inningsPlayed" min="1" max="9" style="width:5rem;padding:6px 8px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px">
+      <button class="btn-save" onclick="saveLineup()">&#128190; Save this lineup</button>
+    </div>
+    <button class="btn-export" onclick="exportXLSX()">
+      &#11015; Download as Excel (.xlsx)
+    </button>
+    <button class="btn-export btn-print" onclick="printLineup()" title="Open the system print dialog with a black-and-white, transposed lineup chart for the dugout">
+      &#128424; Print paper lineup chart (B&amp;W)
+    </button>
+  </div>
+
+  <div class="section" id="savedGamesSection">
+    <div class="section-title">Saved games</div>
+    <div id="savedGamesList"></div>
+  </div>
+
+  <div class="section" id="seasonSection">
+    <div class="section-title">Season summary &mdash; total innings per position</div>
+    <div style="overflow-x:auto"><div id="seasonSummary"></div></div>
+  </div>
+</div>
+
+<!-- Hidden on screen, shown only when printing. Populated by printLineup(). -->
+<div id="printLineupView" aria-hidden="true"></div>
+
+<!-- Modal for viewing a historic game's rotation chart from the Saved Games list. -->
+<div id="gameViewerModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="gameViewerTitle" onclick="if(event.target===this) closeGameViewer()">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="gameViewerTitle">Saved Game</h3>
+      <button class="modal-close" onclick="closeGameViewer()" title="Close (Esc)">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="gameViewerMeta"></div>
+      <div style="overflow-x:auto"><div id="gameViewerChart"></div></div>
+      <div id="gameViewerSummary" class="bench-count-row"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-mini" onclick="closeGameViewer()">Close</button>
+      <button class="btn-save" onclick="printCurrentlyViewedGame()">&#128424; Print this lineup</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const POS=['P','C','1B','2B','3B','SS','LF','LCF','RCF','RF'];
+const SAMPLE=['Alex Johnson','Bailey Smith','Cameron Lee','Dakota Brown','Emery Davis',
+  'Finley Wilson','Gray Martinez','Hayden Taylor','Indigo Anderson','Jordan Thomas',''];
+
+function addRow(name='',restrictions=Array(10).fill(false),notes='',_legacyForceBench='',requiredBench=''){
+  const rows=document.getElementById('rosterRows');
+  const idx=rows.children.length;
+  const div=document.createElement('div');
+  div.className='player-row';
+  div.draggable=true;
+  let html=`<span class="player-num" title="Drag to reorder">${idx+1}</span>`;
+  html+=`<input type="text" placeholder="Player name" value="${name}">`;
+  POS.forEach((p,i)=>{
+    const r=restrictions[i];
+    // Use data-pos so syncOFLabels() can relabel LCF/RCF when 3-OF mode toggles.
+    html+=`<button class="pos-toggle${r?' restricted':''}" data-pos="${p}" onclick="togglePos(this)">${p}</button>`;
+  });
+  // Required bench innings: a small number input. Blank means "auto" (fair rotation decides).
+  // A number means "this player must sit exactly this many innings — takes priority over position locks."
+  html+=`<input type="number" class="bench-req" min="0" placeholder="—" value="${requiredBench||''}" title="Required bench innings (blank = auto). Overrides position locks." style="width:100%;font-size:12px;padding:4px;text-align:center;height:30px;background:#f5e9c8;border:1px solid #5a3825;color:#1a1a1a;font-weight:600;border-radius:3px">`;
+  html+=`<input type="text" class="notes" placeholder="Notes" value="${notes}">`;
+  html+=`<button class="btn-row-del" onclick="deletePlayerRow(this)" title="Remove this player from the roster">&times;</button>`;
+  div.innerHTML=html;
+  attachRowDragHandlers(div);
+  rows.appendChild(div);
+  if(typeof syncOFLabels==='function') syncOFLabels();
+}
+
+// Reflect the current "Use 4 outfielders" rule in the roster header and toggle buttons.
+// In 3-OF mode the LCF column is labeled "CF" and the RCF column is dimmed/struck-through
+// so it's clear those restrictions don't apply (RCF isn't used).
+function syncOFLabels(){
+  const use4OF=document.getElementById('ruleUse4OF')?.checked!==false;
+  // Roster header columns. The header is .roster-header > <span> per column.
+  // Order: #, Name, P, C, 1B, 2B, 3B, SS, LF, LCF, RCF, RF, Notes, (action)
+  const headerSpans=document.querySelectorAll('.roster-header > span');
+  if(headerSpans.length>=12){
+    headerSpans[9].textContent = use4OF ? 'LCF' : 'CF';
+    headerSpans[9].title = use4OF ? '' : 'In 3-OF mode the center fielder lives in this column';
+    headerSpans[10].textContent = 'RCF';
+    headerSpans[10].style.opacity = use4OF ? '' : '0.35';
+    headerSpans[10].style.textDecoration = use4OF ? '' : 'line-through';
+    headerSpans[10].title = use4OF ? '' : 'RCF is unused in 3-outfielder mode';
+  }
+  // Roster row toggles
+  document.querySelectorAll('.player-row .pos-toggle').forEach(btn=>{
+    const basePos=btn.getAttribute('data-pos');
+    if(basePos==='LCF'){
+      btn.textContent = use4OF ? 'LCF' : 'CF';
+      btn.title = use4OF ? '' : 'Restrict CF (in 3-OF mode this column controls CF)';
+    }else if(basePos==='RCF'){
+      btn.style.opacity = use4OF ? '' : '0.35';
+      btn.style.textDecoration = use4OF ? '' : 'line-through';
+      btn.title = use4OF ? '' : 'RCF is unused in 3-outfielder mode';
+    }
+  });
+  // If a schedule is currently rendered, re-render so its dropdowns reflect the new mode.
+  if(typeof lastResult!=='undefined' && lastResult && typeof renderTable==='function'){
+    // Update lastResult.use4OF to the current rule so re-render uses the new labels.
+    lastResult.use4OF=use4OF;
+    renderTable(lastResult.schedule,lastResult.players,lastResult.totalInnings,lastResult.benchCount,lastResult.ifCount,lastResult.ofCount);
+  }
+}
+
+function renumberRosterRows(){
+  document.querySelectorAll('.player-row').forEach((r,i)=>{
+    const num=r.querySelector('.player-num');
+    if(num) num.textContent=String(i+1);
+  });
+}
+
+function deletePlayerRow(btn){
+  const row=btn.closest('.player-row');
+  if(!row) return;
+  const nameInput=row.querySelector('input[type=text]');
+  const name=nameInput?nameInput.value.trim():'';
+  const label=name?`"${name}"`:'this player';
+  if(!confirm(`Remove ${label} from the roster?`)) return;
+  row.remove();
+  renumberRosterRows();
+}
+
+// HTML5 drag-and-drop reordering for roster rows (batting order)
+let _draggedRow=null;
+function attachRowDragHandlers(row){
+  row.addEventListener('dragstart',e=>{
+    // Only allow drag from non-interactive areas (i.e. not text inputs / buttons / selects)
+    const tag=e.target.tagName;
+    if(tag==='INPUT'||tag==='BUTTON'||tag==='TEXTAREA'||tag==='SELECT'){
+      e.preventDefault();
+      return;
+    }
+    _draggedRow=row;
+    row.classList.add('dragging');
+    e.dataTransfer.effectAllowed='move';
+    try{e.dataTransfer.setData('text/plain','');}catch(_){}
+  });
+  row.addEventListener('dragend',()=>{
+    row.classList.remove('dragging');
+    document.querySelectorAll('.player-row').forEach(r=>r.classList.remove('drop-above','drop-below'));
+    _draggedRow=null;
+    renumberRosterRows();
+  });
+  row.addEventListener('dragover',e=>{
+    if(!_draggedRow||_draggedRow===row) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect='move';
+    const rect=row.getBoundingClientRect();
+    const above=e.clientY<rect.top+rect.height/2;
+    row.classList.toggle('drop-above',above);
+    row.classList.toggle('drop-below',!above);
+  });
+  row.addEventListener('dragleave',()=>{
+    row.classList.remove('drop-above','drop-below');
+  });
+  row.addEventListener('drop',e=>{
+    e.preventDefault();
+    row.classList.remove('drop-above','drop-below');
+    if(!_draggedRow||_draggedRow===row) return;
+    const rect=row.getBoundingClientRect();
+    const above=e.clientY<rect.top+rect.height/2;
+    if(above){row.parentNode.insertBefore(_draggedRow,row);}
+    else{row.parentNode.insertBefore(_draggedRow,row.nextSibling);}
+  });
+}
+
+function togglePos(btn){btn.classList.toggle('restricted');}
+
+function getCurrentRosterNames(){
+  const rows=document.querySelectorAll('.player-row');
+  return Array.from(rows).map(r=>{
+    const i=r.querySelector('input[type=text]');
+    return i?i.value.trim():'';
+  }).filter(Boolean);
+}
+
+// Manual locks come from the schedule table dropdowns. Stored as
+// [{playerName, inning, position}, ...]. Persisted with the team.
+let manualCells=[];
+
+// Used during a single generate() run that was triggered by manually locking a cell.
+// When set, the previous schedule is treated as a baseline that must be preserved as
+// much as possible — only cells that genuinely need to change (to accommodate the new
+// user lock) are left for the generator to re-resolve. This keeps locking a single
+// cell from reshuffling unrelated innings.
+let _minimalChangeContext=null; // {inning, playerName, position} or null
+
+function getLocks(){
+  const validNames=new Set(getCurrentRosterNames());
+  const total=parseInt(document.getElementById('innings').value)||6;
+  const userLocks=manualCells.filter(c=>validNames.has(c.playerName)&&c.position&&c.inning>=0&&c.inning<total);
+  if(!_minimalChangeContext || !lastResult || !lastResult.schedule || !lastResult.players){
+    return userLocks;
+  }
+  const {inning:lockInn, playerName:lockPlayer, position:lockPos}=_minimalChangeContext;
+  const userKey=new Set(userLocks.map(c=>`${c.inning}|${c.playerName}`));
+  // Figure out which cells in the lock inning need to be released so a minimal swap
+  // (rather than a full re-shuffle) resolves the new lock. We always release the
+  // lockPlayer's cell (they're moving). We also release whoever currently holds the
+  // newly-locked position — they need to move into the now-vacant slot.
+  const lockPlayerIdx=lastResult.players.findIndex(p=>p.name===lockPlayer);
+  const oldPosOfLockPlayer=lockPlayerIdx>=0?(lastResult.schedule[lockInn]||[])[lockPlayerIdx]:null;
+  const skipInLockInning=new Set([lockPlayer]);
+  if(lockPos==='BN' && oldPosOfLockPlayer && oldPosOfLockPlayer!=='BN'){
+    // Player is moving to bench. Their old field spot now needs a body; free up the
+    // first currently-benched player who can legally play that field position.
+    const oldPosIdx=POS.indexOf(oldPosOfLockPlayer);
+    const curPlayers=getPlayers();
+    for(let pi=0;pi<lastResult.players.length;pi++){
+      if(pi===lockPlayerIdx) continue;
+      if((lastResult.schedule[lockInn]||[])[pi]!=='BN') continue;
+      const curPi=curPlayers.findIndex(p=>p.name===lastResult.players[pi].name);
+      if(curPi>=0 && !curPlayers[curPi].cant[oldPosIdx]){
+        skipInLockInning.add(lastResult.players[pi].name);
+        break;
+      }
+    }
+  }else if(lockPos && lockPos!=='BN' && oldPosOfLockPlayer!==lockPos){
+    // Player is moving to a field position; whoever currently holds it must move.
+    for(let pi=0;pi<lastResult.players.length;pi++){
+      if(pi===lockPlayerIdx) continue;
+      if((lastResult.schedule[lockInn]||[])[pi]===lockPos){
+        skipInLockInning.add(lastResult.players[pi].name);
+        break;
+      }
+    }
+  }
+  // Build shadow locks for every inning of the previous schedule. Every cell is pinned
+  // except (a) cells that already have a user lock, and (b) the released cells in the
+  // lock inning. This keeps innings before AND after the change identical to before.
+  let shadow=[];
+  const endInn=Math.min(total,lastResult.schedule.length);
+  for(let i=0;i<endInn;i++){
+    lastResult.players.forEach((pl,pi)=>{
+      if(!validNames.has(pl.name)) return;
+      if(userKey.has(`${i}|${pl.name}`)) return; // user lock for this cell wins
+      if(i===lockInn && skipInLockInning.has(pl.name)) return;
+      const pos=lastResult.schedule[i][pi];
+      if(pos) shadow.push({playerName:pl.name,inning:i,position:pos});
+    });
+  }
+  // Drop shadow locks that would directly conflict with a user lock under the active
+  // rules — otherwise the lock validator inside generate() would hard-error on what
+  // is really just a stale baseline cell.
+  const ruleNoPC=document.getElementById('ruleNoPC')?.checked;
+  const ruleNoPAfterC=document.getElementById('ruleNoPAfterC')?.checked;
+  const ruleNoB2B=document.getElementById('ruleNoB2B')?.checked;
+  // ruleMinFieldBetweenBench is now a 1-5 dropdown; the chosen value is the minimum gap.
+  const minFBVal=parseInt(document.getElementById('ruleMinFieldBetweenBench')?.value,10);
+  const MIN_FB=isNaN(minFBVal)?3:Math.max(1,Math.min(5,minFBVal));
+  const ruleMinFB=MIN_FB>=1; // always truthy now (no off option)
+  const userByPlayer={};
+  userLocks.forEach(l=>{(userByPlayer[l.playerName]=userByPlayer[l.playerName]||[]).push(l);});
+  shadow=shadow.filter(s=>{
+    const userLs=userByPlayer[s.playerName];
+    if(!userLs) return true;
+    for(const u of userLs){
+      if(ruleNoPC){
+        if(u.position==='P' && s.position==='C') return false;
+        if(u.position==='C' && s.position==='P') return false;
+      }
+      if(ruleNoPAfterC){
+        if(u.position==='C' && s.position==='P' && s.inning===u.inning+1) return false;
+        if(u.position==='P' && s.position==='C' && s.inning===u.inning-1) return false;
+      }
+      if(ruleNoB2B){
+        if(u.position==='BN' && s.position==='BN' && Math.abs(s.inning-u.inning)===1) return false;
+      }
+      if(ruleMinFB){
+        if(u.position==='BN' && s.position==='BN'){
+          const gap=Math.abs(s.inning-u.inning)-1;
+          if(gap<MIN_FB) return false;
+        }
+      }
+    }
+    return true;
+  });
+  return [...userLocks, ...shadow];
+}
+
+function setManualCell(playerName,inning,position){
+  // Sentinel value from the dropdown's "Unlock" option — remove the lock and leave the schedule as-is.
+  if(position==='__UNLOCK__'){
+    unlockCell(playerName,inning);
+    return;
+  }
+  // Replace any existing lock for the same (player, inning)
+  manualCells=manualCells.filter(c=>!(c.playerName===playerName&&c.inning===inning));
+  // Auto-resolve conflicts: a non-bench position can only be held by one player per inning,
+  // so clear any other player's lock for the same position+inning.
+  if(position && position!=='BN'){
+    manualCells=manualCells.filter(c=>!(c.position===position&&c.inning===inning&&c.playerName!==playerName));
+  }
+  if(position) manualCells.push({playerName,inning,position});
+  if(DATA.currentTeamId){
+    DATA.teams[DATA.currentTeamId].manualCells=manualCells;
+    saveData();
+  }
+  // Minimal-change regenerate: every other inning is pinned to the prior schedule,
+  // and within the lock inning only the cells that have to move are released. This
+  // means locking one cell never reshuffles a whole game's worth of unrelated innings.
+  _minimalChangeContext={inning,playerName,position};
+  try{ generate(); } finally { _minimalChangeContext=null; }
+}
+
+function unlockCell(playerName,inning){
+  // Remove just this lock. Do NOT regenerate — the schedule's positions stay exactly the same.
+  const before=manualCells.length;
+  manualCells=manualCells.filter(c=>!(c.playerName===playerName&&c.inning===inning));
+  if(manualCells.length===before) return;
+  if(DATA.currentTeamId){
+    DATA.teams[DATA.currentTeamId].manualCells=manualCells;
+    saveData();
+  }
+  refreshLockUI();
+}
+
+function clearAllManualCells(){
+  if(manualCells.length===0) return;
+  if(!confirm('Clear all manual position picks? (The schedule positions stay the same — locks are just removed.)')) return;
+  manualCells=[];
+  if(DATA.currentTeamId){
+    DATA.teams[DATA.currentTeamId].manualCells=[];
+    saveData();
+  }
+  // Schedule stays the same; only lock styling/options need refreshing.
+  refreshLockUI();
+}
+
+function loadManualCells(saved){
+  manualCells=Array.isArray(saved)?saved.slice():[];
+}
+
+// Update lock indicators and dropdown unlock-option visibility on every cell-select
+// without re-running the generator or re-rendering the whole table.
+function refreshLockUI(){
+  const cells=document.querySelectorAll('#rotTable .cell-select');
+  cells.forEach(sel=>{
+    // The data-player attribute may have JS-escaped apostrophes from the inline onchange
+    // handler — undo that so it matches the canonical name in manualCells.
+    const player=(sel.getAttribute('data-player')||'').replace(/\\'/g,"'");
+    const inning=parseInt(sel.getAttribute('data-inning'),10);
+    if(!player||isNaN(inning)) return;
+    const isLocked=manualCells.some(c=>c.playerName===player&&c.inning===inning);
+    sel.classList.toggle('locked',isLocked);
+    const existingUnlock=sel.querySelector('option[value="__UNLOCK__"]');
+    const existingDivider=sel.querySelector('option[data-unlock-divider="1"]');
+    if(isLocked){
+      // Make sure the unlock option (and its divider) are at the very top of the list.
+      if(!existingUnlock){
+        const opt=document.createElement('option');
+        opt.value='__UNLOCK__';
+        opt.textContent='\u{1F513} Unlock this cell';
+        sel.insertBefore(opt,sel.firstChild);
+      }
+      if(!existingDivider){
+        const divider=document.createElement('option');
+        divider.value='';
+        divider.disabled=true;
+        divider.textContent='──────────';
+        divider.setAttribute('data-unlock-divider','1');
+        // Place divider directly after the unlock option
+        const unlockOpt=sel.querySelector('option[value="__UNLOCK__"]');
+        if(unlockOpt && unlockOpt.nextSibling) sel.insertBefore(divider,unlockOpt.nextSibling);
+        else sel.appendChild(divider);
+      }
+    }else{
+      if(existingUnlock) existingUnlock.remove();
+      if(existingDivider) existingDivider.remove();
+    }
+  });
+}
+
+const RULE_IDS=['ruleNoPAfterC','ruleNoPC','ruleFairBench','ruleNoB2B','ruleMinFieldBetweenBench','ruleBalanceIFOF','ruleUse4OF'];
+function captureRules(){
+  const o={};
+  RULE_IDS.forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    if(el.tagName==='SELECT') o[id]=el.value;        // numeric/string-valued rules (e.g. min innings between bench)
+    else o[id]=el.checked;                            // boolean toggle rules
+  });
+  return o;
+}
+function loadRulesIntoForm(rules){
+  if(!rules) return;
+  RULE_IDS.forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el || rules[id]===undefined) return;
+    if(el.tagName==='SELECT'){
+      // Migrate legacy boolean values: true → previous default (3), false → most permissive (1).
+      let v=rules[id];
+      if(v===true) v='3';
+      else if(v===false) v='1';
+      else v=String(v);
+      // Clamp to available options if needed.
+      const valid=Array.from(el.options).map(o=>o.value);
+      if(!valid.includes(v)) v=el.value;
+      el.value=v;
+    }else{
+      el.checked=!!rules[id];
+    }
+  });
+}
+
+function getPlayers(){
+  const rows=document.querySelectorAll('.player-row');
+  const players=[];
+  rows.forEach(row=>{
+    const inputs=row.querySelectorAll('input[type=text]');
+    const numInputs=row.querySelectorAll('input[type=number].bench-req');
+    const name=inputs[0].value.trim();
+    if(!name)return;
+    const btns=row.querySelectorAll('.pos-toggle');
+    const cant=Array.from(btns).map(b=>b.classList.contains('restricted'));
+    const notes=inputs[1]?inputs[1].value.trim():'';
+    // Required bench innings: parsed from the per-player number input. Blank = auto (null).
+    const rbRaw=(numInputs[0]?.value || '').trim();
+    const requiredBench = rbRaw==='' ? null : Math.max(0, parseInt(rbRaw,10) || 0);
+    // Manual benches/locks now come from the schedule table dropdowns (manualCells state).
+    players.push({name,cant,notes,requiredBench,forceBench:[]});
+  });
+  return players;
+}
+
+let lastResult=null;
+
+function generate(){
+  const errDiv=document.getElementById('errMsg');
+  errDiv.innerHTML='';
+  const totalInnings=parseInt(document.getElementById('innings').value)||6;
+  const pitchSwitch=parseInt(document.getElementById('pitchSwitch').value)||2;
+  const fieldSwitch=parseInt(document.getElementById('fieldSwitch').value)||2;
+  const players=getPlayers();
+  const n=players.length;
+
+  // Rule toggles — every rule can be turned off independently
+  // The "min field innings between bench innings" rule is now an integer (1-5) chosen via dropdown.
+  // Anything ≥1 is enforced; the value IS the minimum gap. Below we still alias as a boolean
+  // (truthy when ≥1) for the existing call sites that just check whether the rule is "on".
+  const minFBRaw=parseInt(document.getElementById('ruleMinFieldBetweenBench').value,10);
+  const MIN_FIELD_BETWEEN_BENCH=isNaN(minFBRaw)?3:Math.max(1,Math.min(5,minFBRaw));
+  const RULES={
+    noPAfterC: document.getElementById('ruleNoPAfterC').checked,
+    noPC: document.getElementById('ruleNoPC').checked,
+    fairBench: document.getElementById('ruleFairBench').checked,
+    noB2B: document.getElementById('ruleNoB2B').checked,
+    minFieldBetweenBench: MIN_FIELD_BETWEEN_BENCH>=1,   // truthy on/off flag for existing call sites
+    minFBValue: MIN_FIELD_BETWEEN_BENCH,                 // the actual minimum to enforce
+    balanceIFOF: document.getElementById('ruleBalanceIFOF').checked,
+    use4OF: document.getElementById('ruleUse4OF').checked
+  };
+  // Active outfield position indices into POS. In 3-outfielder mode RCF (index 8) is dropped
+  // and LCF (index 7) acts as the lone center fielder. The roster's LCF restriction is what
+  // gates the CF spot in 3OF mode; the RCF restriction is unused.
+  const ACTIVE_OF_IDX = RULES.use4OF ? [6,7,8,9] : [6,7,9];
+  // Field positions on the diamond: P + C + 4 IF + (3 or 4) OF.
+  const ACTIVE_FIELD_COUNT = 2 + 4 + ACTIVE_OF_IDX.length;
+
+  if(n<ACTIVE_FIELD_COUNT){
+    errDiv.innerHTML=`<div class="err-msg">Need at least ${ACTIVE_FIELD_COUNT} players for ${ACTIVE_FIELD_COUNT} field positions${RULES.use4OF?' (4 outfielders)':' (3 outfielders)'}. Currently ${n} named.</div>`;
+    return;
+  }
+
+  // Shuffle helper — used so each click of Generate produces a different valid rotation.
+  const shuffle=arr=>{
+    const a=arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  };
+  // Random iteration order over players for any tie-breaking decision.
+  const shufOrder=shuffle(Array.from({length:n},(_,i)=>i));
+
+  // Validate manual bench picks: per inning, total manually-benched ≤ n - 10
+  const manualByInning=Array.from({length:totalInnings},()=>[]);
+  players.forEach((pl,pi)=>{
+    pl.forceBench.forEach(inn=>{
+      if(inn>=0&&inn<totalInnings) manualByInning[inn].push(pi);
+    });
+  });
+  for(let i=0;i<totalInnings;i++){
+    if(manualByInning[i].length>n-ACTIVE_FIELD_COUNT){
+      const names=manualByInning[i].map(pi=>players[pi].name).join(', ');
+      errDiv.innerHTML=`<div class="err-msg">Inning ${i+1}: ${manualByInning[i].length} players manually benched (${names}), but only ${n-ACTIVE_FIELD_COUNT} bench slot(s) available. Reduce manual benches or add more players.</div>`;
+      return;
+    }
+  }
+
+  // Manual position locks: validate and bucket per-inning.
+  // locksByInning[inn] = Map(playerIdx -> position string)
+  const rawLocks=getLocks();
+  const playerByName=Object.fromEntries(players.map((p,i)=>[p.name,i]));
+  const locksByInning=Array.from({length:totalInnings},()=>new Map());
+  const lockErrors=[];
+  rawLocks.forEach(l=>{
+    const pi=playerByName[l.playerName];
+    if(pi===undefined){lockErrors.push(`Lock references unknown player "${l.playerName}"`);return;}
+    if(l.inning<0||l.inning>=totalInnings){lockErrors.push(`${l.playerName}: inning ${l.inning+1} is out of range (1-${totalInnings})`);return;}
+    if(!RULES.use4OF && l.position==='RCF'){
+      lockErrors.push(`${l.playerName}: locked to RCF in inning ${l.inning+1}, but 3-outfielder mode is on (RCF is unused). Remove the lock or enable 4-outfielder mode.`);
+      return;
+    }
+    if(locksByInning[l.inning].has(pi)){
+      const existing=locksByInning[l.inning].get(pi);
+      lockErrors.push(`${l.playerName} locked to two positions in inning ${l.inning+1} (${existing} and ${l.position})`);
+      return;
+    }
+    // Field positions can only be held by one player per inning; BN is allowed for multiple players.
+    if(l.position!=='BN'){
+      for(const [otherPi,otherPos] of locksByInning[l.inning]){
+        if(otherPos===l.position && otherPi!==pi){
+          lockErrors.push(`Inning ${l.inning+1}: ${l.position} locked to both ${players[otherPi].name} and ${l.playerName}`);
+          return;
+        }
+      }
+    }
+    if(manualByInning[l.inning].includes(pi)){
+      lockErrors.push(`${l.playerName} is force-benched in inning ${l.inning+1} but also locked to ${l.position}`);
+      return;
+    }
+    locksByInning[l.inning].set(pi,l.position);
+  });
+  if(lockErrors.length){
+    errDiv.innerHTML=`<div class="err-msg">Manual lock errors: ${lockErrors.join('; ')}.</div>`;
+    return;
+  }
+  // Across-game P/C rule check — only enforced when that rule is enabled.
+  if(RULES.noPC){
+    const lockedAsP=new Set(),lockedAsC=new Set();
+    for(let i=0;i<totalInnings;i++){
+      for(const [pi,pos] of locksByInning[i]){
+        if(pos==='P') lockedAsP.add(pi);
+        if(pos==='C') lockedAsC.add(pi);
+      }
+    }
+    for(const pi of lockedAsP){
+      if(lockedAsC.has(pi)){
+        errDiv.innerHTML=`<div class="err-msg">${players[pi].name} is locked to both P and C in the same game, but the "no P + C same game" rule is enabled. Disable that rule or remove a lock.</div>`;
+        return;
+      }
+    }
+  }
+
+  const benchSlotsPerInning=n-ACTIVE_FIELD_COUNT;
+
+  // Required-bench targets per player (from the roster "Bench" column).
+  // null/undefined = no requirement (auto). Clamped to [0, totalInnings].
+  const requiredBench=players.map(p=>{
+    if(typeof p.requiredBench!=='number') return null;
+    return Math.max(0,Math.min(totalInnings,p.requiredBench|0));
+  });
+  // Validate: the sum of required sits can't exceed the available bench slots.
+  const totalRequired=requiredBench.reduce((s,v)=>s+(v||0),0);
+  const totalBenchSlotsAvail=benchSlotsPerInning*totalInnings;
+  if(totalRequired>totalBenchSlotsAvail){
+    errDiv.innerHTML=`<div class="err-msg">Required bench innings total ${totalRequired}, but only ${totalBenchSlotsAvail} bench slots are available across the game (${benchSlotsPerInning}/inning × ${totalInnings} innings). Reduce the per-player bench requirements or add players.</div>`;
+    return;
+  }
+
+  // Per-game tracking
+  const pitchCount=Array(n).fill(0);       // innings pitched this game
+  const catchCount=Array(n).fill(0);       // innings caught this game
+  const posCount=Array.from({length:n},()=>Array(10).fill(0));
+  const lastPos=Array(n).fill(-1);
+  const caughtLast=Array(n).fill(false);   // caught in the immediately preceding inning
+  const benchCount=Array(n).fill(0);
+  const benchedLast=Array(n).fill(false);  // benched in immediately preceding inning
+  const lastBenchInning=Array(n).fill(-Infinity); // most recent inning index this player sat (for min-field-between-bench rule)
+  const ifCount=Array(n).fill(0);          // infield innings (P, C, 1B, 2B, 3B, SS)
+  const ofCount=Array(n).fill(0);          // outfield innings (LF, LCF, RCF, RF)
+  let curPitcher=-1;
+  const schedule=[];
+  const warnings=[];
+
+  for(let inn=0;inn<totalInnings;inn++){
+
+    // --- REQUIRED-BENCH (per-player count) — has priority over position locks ----------
+    // A player with deficit ≥ inningsLeft MUST sit this inning or they can't hit their target.
+    // A player with deficit > 0 (but less urgent) just gets *preferred* in bench picking.
+    const mustSitSet=new Set();
+    const wantsSitSet=new Set();
+    const inningsLeft=totalInnings-inn; // including this inning
+    for(let p=0;p<n;p++){
+      const req=requiredBench[p];
+      if(req==null||req<=0) continue;
+      const deficit=req-benchCount[p];
+      if(deficit<=0) continue;
+      if(deficit>=inningsLeft) mustSitSet.add(p);
+      else wantsSitSet.add(p);
+    }
+    if(mustSitSet.size>benchSlotsPerInning){
+      warnings.push(`Inning ${inn+1}: ${mustSitSet.size} players need to sit to hit their required bench counts but only ${benchSlotsPerInning} bench slot(s) are available — some won't reach their target.`);
+    }
+
+    // Players forced to bench this inning (manual user override)
+    const manualBenchSet=new Set(manualByInning[inn]);
+    // Manual position locks for this inning
+    const lockMap=locksByInning[inn]; // Map(playerIdx -> position)
+    const lockedPlayers=new Set(lockMap.keys());
+    // Players locked to a position other than P this inning are unavailable for pitcher.
+    // Required-bench mustSit takes PRIORITY over position locks: drop conflicting locks here.
+    const lockedNotP=new Set(); let lockedPitcher=-1;
+    for(const [pi,pos] of lockMap){
+      if(mustSitSet.has(pi) && pos!=='BN'){
+        warnings.push(`Inning ${inn+1}: dropped position lock of ${players[pi].name} to ${pos} — their required bench count needs them on the bench this inning.`);
+        continue; // skip this lock entirely
+      }
+      if(pos==='P') lockedPitcher=pi;
+      else lockedNotP.add(pi);
+    }
+    // If the current pitcher is force-benched this inning, switch to a new one
+    if(curPitcher>=0 && manualBenchSet.has(curPitcher)) curPitcher=-1;
+    // If current pitcher is locked to a non-P position this inning, switch
+    if(curPitcher>=0 && lockedNotP.has(curPitcher)) curPitcher=-1;
+    // If current pitcher must sit this inning per their required bench count, switch
+    if(curPitcher>=0 && mustSitSet.has(curPitcher)) curPitcher=-1;
+    // If someone is locked to P this inning, that player IS the pitcher
+    if(lockedPitcher>=0) curPitcher=lockedPitcher;
+
+    // 1. Pick pitcher
+    // Must not: have restriction on P, have caught last inning, have already caught THIS game,
+    // be manually benched, or be locked to a non-P position this inning.
+    const needNew=(curPitcher<0)||((inn%pitchSwitch)===0&&lockedPitcher<0);
+    if(needNew && lockedPitcher<0){
+      let best=-1,bestCount=9999;
+      for(const p of shufOrder){
+        if(manualBenchSet.has(p)||lockedNotP.has(p)||mustSitSet.has(p)) continue;
+        if(players[p].cant[0]) continue;
+        if(RULES.noPAfterC && caughtLast[p]) continue;
+        if(RULES.noPC && catchCount[p]>0) continue;
+        if(pitchCount[p]<bestCount){bestCount=pitchCount[p]; best=p;}
+      }
+      // fallback 1: drop the no-P-after-C rule only
+      if(best<0 && RULES.noPAfterC){
+        for(const p of shufOrder){
+          if(manualBenchSet.has(p)||lockedNotP.has(p)||mustSitSet.has(p)) continue;
+          if(players[p].cant[0]) continue;
+          if(RULES.noPC && catchCount[p]>0) continue;
+          best=p; break;
+        }
+      }
+      // fallback 2: drop the no-P-and-C rule too — last resort
+      if(best<0){
+        for(const p of shufOrder){if(!manualBenchSet.has(p)&&!lockedNotP.has(p)&&!mustSitSet.has(p)&&!players[p].cant[0]){best=p;break;}}
+      }
+      if(best<0){
+        errDiv.innerHTML=`<div class="err-msg">No eligible pitcher for inning ${inn+1}. Too many restrictions — try relaxing P/C constraints.</div>`;
+        return;
+      }
+      curPitcher=best;
+    }
+    pitchCount[curPitcher]++;
+
+    const assigned=Array(n).fill(false);
+    const innPos=Array(n).fill('');
+    assigned[curPitcher]=true;
+    innPos[curPitcher]='P';
+    posCount[curPitcher][0]++;
+    ifCount[curPitcher]++;          // P counts as an infield inning
+
+    // 1b. Apply all non-P manual locks for this inning.
+    //     C / IF / OF / BN locks are honored before any auto-selection runs.
+    //     Skip any lock that conflicts with a required-bench mustSit assignment
+    //     (already warned about above) so the player ends up on the bench instead.
+    let lockedCatcher=-1;
+    for(const [pi,pos] of lockMap){
+      if(pi===curPitcher) continue; // P-lock already handled
+      if(assigned[pi]) continue;
+      if(mustSitSet.has(pi) && pos!=='BN') continue; // required-bench priority
+      const posIdx=POS.indexOf(pos);
+      assigned[pi]=true;
+      innPos[pi]=pos;
+      if(pos==='BN'){
+        benchCount[pi]++;
+      }else if(posIdx>=0){
+        posCount[pi][posIdx]++;
+        if(pos==='C'){
+          catchCount[pi]++;
+          ifCount[pi]++;
+          lastPos[pi]=1;
+          lockedCatcher=pi;
+        }else if(posIdx>=2&&posIdx<=5){
+          ifCount[pi]++;
+          lastPos[pi]=posIdx;
+        }else if(posIdx>=6&&posIdx<=9){
+          ofCount[pi]++;
+          lastPos[pi]=posIdx;
+        }
+      }
+    }
+
+    // 2. Pick bench players.
+    //    Step A: honor manual user-specified bench picks first.
+    //    Step B: fair rotation fills any remaining bench slots
+    //            HARD RULE: never auto-bench a player who was benched the previous inning.
+    //            Players already locked to BN are counted toward the inning's bench cap.
+    let alreadyBenched=0;
+    for(let p=0;p<n;p++){if(innPos[p]==='BN') alreadyBenched++;}
+    const benchThisInning=new Set();
+    // Required-bench "must sit" players are added BEFORE manual force-bench and auto picks.
+    // They've already had their conflicting position locks dropped above.
+    mustSitSet.forEach(p=>{
+      if(p===curPitcher) return; // pitcher logic above already skipped them
+      if(!assigned[p]) benchThisInning.add(p);
+    });
+    manualBenchSet.forEach(p=>{
+      if(p===curPitcher) return; // already pitching — shouldn't happen due to pitcher logic above
+      if(!assigned[p]) benchThisInning.add(p);
+    });
+    const remainingSlots=Math.max(0,benchSlotsPerInning-alreadyBenched-benchThisInning.size);
+    if(remainingSlots>0){
+      // Helper: true if benching player p this inning would violate the
+      // min-field-between-bench rule (they sat too recently).
+      const tooSoonSinceLastBench=p=>(
+        RULES.minFieldBetweenBench &&
+        benchCount[p]>0 &&
+        (inn-lastBenchInning[p])<=MIN_FIELD_BETWEEN_BENCH
+      );
+      let candidates=[];
+      for(let p=0;p<n;p++){
+        if(assigned[p]||benchThisInning.has(p)) continue;
+        if(RULES.noB2B && benchedLast[p]) continue; // back-to-back bench rule (toggleable)
+        if(tooSoonSinceLastBench(p)) continue;      // min-field-between-bench rule
+        candidates.push(p);
+      }
+      // Fallback 1: if min-field-between-bench is on and we're short, allow players
+      // who'd violate just that rule (but still respect noB2B if it's on).
+      if(RULES.minFieldBetweenBench && candidates.length<remainingSlots){
+        for(let p=0;p<n;p++){
+          if(assigned[p]||benchThisInning.has(p)) continue;
+          if(!tooSoonSinceLastBench(p)) continue;     // already considered above
+          if(RULES.noB2B && benchedLast[p]) continue; // still avoid B2B
+          candidates.push(p);
+        }
+        if(candidates.length<remainingSlots){
+          warnings.push(`Inning ${inn+1}: had to bench a player with fewer than ${MIN_FIELD_BETWEEN_BENCH} field innings since their last sit (not enough alternatives).`);
+        }
+      }
+      // Fallback 2: if noB2B is on and we still ran out of candidates, allow benchedLast
+      if(RULES.noB2B && candidates.length<remainingSlots){
+        for(let p=0;p<n;p++){
+          if(assigned[p]||benchThisInning.has(p)||!benchedLast[p]) continue;
+          if(candidates.includes(p)) continue;
+          candidates.push(p);
+        }
+        warnings.push(`Inning ${inn+1}: had to allow a back-to-back bench (not enough non-recent candidates).`);
+      }
+      // Shuffle so equally-fair candidates pick in random order.
+      candidates=shuffle(candidates);
+      // Required-bench priority score:
+      //   null/undefined → 0 (no preference, normal fair rotation)
+      //   0              → -999 ("never sit" — pushed to the back of bench candidates)
+      //   N > 0          → max(0, N - currentSits) (deficit, larger = sit sooner)
+      const wantsSitDeficit=p=>{
+        const req=requiredBench[p];
+        if(req==null) return 0;
+        if(req===0) return -999;
+        return Math.max(0,req-benchCount[p]);
+      };
+      // Sort by fairness only if the rule is enabled; otherwise just keep the random order.
+      if(RULES.fairBench){
+        candidates.sort((a,b)=>{
+          const da=wantsSitDeficit(a), db=wantsSitDeficit(b);
+          if(da!==db) return db-da; // larger deficit first
+          if(benchCount[a]!==benchCount[b]) return benchCount[a]-benchCount[b];
+          if(RULES.noB2B && benchedLast[a]!==benchedLast[b]) return benchedLast[a]?1:-1;
+          // Prefer players whose last bench was longer ago (more field innings since their last sit).
+          if(RULES.minFieldBetweenBench && lastBenchInning[a]!==lastBenchInning[b]) return lastBenchInning[a]-lastBenchInning[b];
+          const aUniq=posCount[a].filter(x=>x>0).length;
+          const bUniq=posCount[b].filter(x=>x>0).length;
+          return bUniq-aUniq;
+        });
+      }else{
+        // Even without fair-bench, the per-player bench requirement still wins,
+        // then non-B2B and longer-ago-bench as tiebreakers.
+        candidates.sort((a,b)=>{
+          const da=wantsSitDeficit(a), db=wantsSitDeficit(b);
+          if(da!==db) return db-da;
+          if(RULES.noB2B && benchedLast[a]!==benchedLast[b]) return benchedLast[a]?1:-1;
+          if(RULES.minFieldBetweenBench && lastBenchInning[a]!==lastBenchInning[b]) return lastBenchInning[a]-lastBenchInning[b];
+          return 0;
+        });
+      }
+      const fillCount=Math.min(remainingSlots,candidates.length);
+      for(let i=0;i<fillCount;i++) benchThisInning.add(candidates[i]);
+    }
+    benchThisInning.forEach(p=>{assigned[p]=true;innPos[p]='BN';benchCount[p]++;});
+
+    // 3. Pick catcher (skip if already locked manually)
+    if(lockedCatcher<0){
+      let best=-1,bestScore=-9999;
+      for(const p of shufOrder){
+        if(assigned[p]||players[p].cant[1]) continue;
+        if(RULES.noPC && pitchCount[p]>0) continue;
+        let score=-posCount[p][1]*5;
+        if(lastPos[p]!==1)score+=8;
+        if(lastPos[p]<0)score+=3;
+        if(score>bestScore){bestScore=score;best=p;}
+      }
+      // fallback: ignore pitch history (will warn)
+      if(best<0){
+        for(const p of shufOrder){
+          if(!assigned[p]&&!players[p].cant[1]){best=p;break;}
+        }
+      }
+      if(best<0){
+        errDiv.innerHTML=`<div class="err-msg">No eligible catcher for inning ${inn+1}. Try relaxing C restrictions.</div>`;
+        return;
+      }
+      assigned[best]=true;
+      innPos[best]='C';
+      posCount[best][1]++;
+      lastPos[best]=1;
+      catchCount[best]++;
+      ifCount[best]++;              // C counts as an infield inning
+    }
+
+    // 4. Bucket remaining players into IF (1B/2B/3B/SS) and OF (LF/LCF/RCF/RF)
+    //    so that each player's IF and OF totals stay as even as possible across the game.
+    //    Only positions NOT already filled by manual locks are open this inning.
+    const IF_IDX_ALL=[2,3,4,5], OF_IDX_ALL=ACTIVE_OF_IDX;
+    const usedSet=new Set(innPos.filter(Boolean));
+    const IF_IDX=IF_IDX_ALL.filter(i=>!usedSet.has(POS[i]));
+    const OF_IDX=OF_IDX_ALL.filter(i=>!usedSet.has(POS[i]));
+    let remaining=[];
+    for(let p=0;p<n;p++) if(!assigned[p]) remaining.push(p);
+    // Shuffle so equally-balanced players bucket in random order.
+    remaining=shuffle(remaining);
+    if(RULES.balanceIFOF){
+      // Sort by IF need: most-negative (ifCount-ofCount) first → goes to IF this inning.
+      remaining.sort((a,b)=>{
+        const ba=ifCount[a]-ofCount[a], bb=ifCount[b]-ofCount[b];
+        if(ba!==bb) return ba-bb;
+        if(ifCount[a]!==ifCount[b]) return ifCount[a]-ifCount[b];
+        return 0;
+      });
+    }
+    // If IF/OF balance is off, the random order picks who goes to IF vs OF this inning.
+    const numIF=Math.min(IF_IDX.length,remaining.length);
+    let ifPlayers=remaining.slice(0,numIF);
+    let ofPlayers=remaining.slice(numIF);
+    // Honor restrictions: if a bucketed player can't play any position in their bucket,
+    // swap with someone in the other bucket who can play it (and vice-versa).
+    const canBucket=(p,positions)=>positions.some(pi=>!players[p].cant[pi]);
+    for(let i=0;i<ifPlayers.length;i++){
+      if(!canBucket(ifPlayers[i],IF_IDX)){
+        const j=ofPlayers.findIndex(op=>canBucket(op,IF_IDX)&&canBucket(ifPlayers[i],OF_IDX));
+        if(j>=0){const t=ifPlayers[i];ifPlayers[i]=ofPlayers[j];ofPlayers[j]=t;}
+      }
+    }
+    for(let i=0;i<ofPlayers.length;i++){
+      if(!canBucket(ofPlayers[i],OF_IDX)){
+        const j=ifPlayers.findIndex(ip=>canBucket(ip,OF_IDX)&&canBucket(ofPlayers[i],IF_IDX));
+        if(j>=0){const t=ofPlayers[i];ofPlayers[i]=ifPlayers[j];ifPlayers[j]=t;}
+      }
+    }
+    // Assign specific positions within each bucket (existing scoring: avoid same pos as last inning, balance per-pos count).
+    const assignBucket=(group,positions,isIF)=>{
+      // Iterate positions tightest-first (fewest eligible players first), so a player
+      // who can only play 1-2 positions doesn't get squeezed out by greedier assignments.
+      // Tiebreak randomly so the schedule still varies between generations.
+      const orderedPos=positions.slice().sort((a,b)=>{
+        const ac=group.filter(p=>!assigned[p]&&!players[p].cant[a]).length;
+        const bc=group.filter(p=>!assigned[p]&&!players[p].cant[b]).length;
+        if(ac!==bc) return ac-bc;
+        return Math.random()-0.5;
+      });
+      for(const pi of orderedPos){
+        const shufGroup=shuffle(group);
+        let best=-1,bestScore=-99999;
+        for(const p of shufGroup){
+          if(assigned[p]||players[p].cant[pi]) continue;
+          let score=-posCount[p][pi]*5;
+          if(lastPos[p]!==pi) score+=8;
+          if(lastPos[p]<0) score+=3;
+          if(score>bestScore){bestScore=score;best=p;}
+        }
+        // Only assign if we found someone who CAN play this position.
+        // Restrictions are honored — leave the position open and let the
+        // reconciliation pass below try to fill it from the other bucket.
+        if(best>=0){
+          assigned[best]=true;
+          innPos[best]=POS[pi];
+          posCount[best][pi]++;
+          lastPos[best]=pi;
+          if(isIF) ifCount[best]++; else ofCount[best]++;
+        }
+      }
+    };
+    assignBucket(ifPlayers,IF_IDX,true);
+    assignBucket(ofPlayers,OF_IDX,false);
+
+    // Reconciliation: any position still open is filled by an unassigned player
+    // (from either bucket) who can legally play it. Restrictions are still respected.
+    const ALL_FIELD=[2,3,4,5,...ACTIVE_OF_IDX];
+    for(const pi of ALL_FIELD){
+      if(innPos.includes(POS[pi])) continue;
+      // Prefer players in the matching bucket first (to keep IF/OF balance), then any unassigned.
+      const inMatchingBucket=p=>(pi>=2&&pi<=5)?ifPlayers.includes(p):ofPlayers.includes(p);
+      const eligible=[];
+      for(let p=0;p<n;p++){
+        if(!assigned[p]&&!players[p].cant[pi]) eligible.push(p);
+      }
+      if(eligible.length===0) continue;
+      eligible.sort((a,b)=>{
+        const am=inMatchingBucket(a)?0:1, bm=inMatchingBucket(b)?0:1;
+        if(am!==bm) return am-bm;
+        return -posCount[a][pi]+posCount[b][pi]; // fewer plays at this position first
+      });
+      const p=eligible[0];
+      assigned[p]=true; innPos[p]=POS[pi]; posCount[p][pi]++; lastPos[p]=pi;
+      if(pi<=5) ifCount[p]++; else ofCount[p]++;
+    }
+
+    // If any position is still unfilled, restrictions made it impossible to fill — warn.
+    for(const pi of ALL_FIELD){
+      if(!innPos.includes(POS[pi])){
+        warnings.push(`Inning ${inn+1}: no eligible player for ${POS[pi]} (every remaining player is restricted from it).`);
+      }
+    }
+    // Anyone still unassigned (couldn't be placed without violating a restriction) goes to BN.
+    for(let p=0;p<n;p++){
+      if(!assigned[p]){
+        innPos[p]='BN'; assigned[p]=true; benchCount[p]++;
+        warnings.push(`Inning ${inn+1}: ${players[p].name} could not be placed without violating a restriction — benched.`);
+      }
+    }
+
+    for(let p=0;p<n;p++){if(!assigned[p])innPos[p]='BN';}
+
+    // Update caught-last-inning (for next inning's pitcher eligibility)
+    for(let p=0;p<n;p++){
+      caughtLast[p]=(innPos[p]==='C');
+      benchedLast[p]=(innPos[p]==='BN');
+      if(innPos[p]==='BN') lastBenchInning[p]=inn;
+    }
+    lastPos[curPitcher]=0;
+
+    schedule.push(innPos);
+  }
+
+  // Post-generation validation (each only runs if its rule is enabled)
+  if(RULES.noPC){
+    for(let p=0;p<n;p++){
+      if(pitchCount[p]>0&&catchCount[p]>0)
+        warnings.push(`${players[p].name} both pitched and caught`);
+    }
+  }
+  if(RULES.noB2B){
+    for(let p=0;p<n;p++){
+      for(let i=1;i<totalInnings;i++){
+        if(schedule[i-1][p]==='BN' && schedule[i][p]==='BN'){
+          warnings.push(`${players[p].name} was benched in inning ${i} and ${i+1} (back-to-back)`);
+          break;
+        }
+      }
+    }
+  }
+  if(RULES.minFieldBetweenBench){
+    for(let p=0;p<n;p++){
+      let prevBench=-1;
+      for(let i=0;i<totalInnings;i++){
+        if(schedule[i][p]==='BN'){
+          if(prevBench>=0 && (i-prevBench-1)<MIN_FIELD_BETWEEN_BENCH){
+            warnings.push(`${players[p].name} sat in inning ${prevBench+1} and again in inning ${i+1} with only ${i-prevBench-1} field inning(s) in between (need ${MIN_FIELD_BETWEEN_BENCH})`);
+            break;
+          }
+          prevBench=i;
+        }
+      }
+    }
+  }
+  // Fair-rotation check: max bench count should be at most ceil(totalBenchSlots / n)
+  const totalBenchSlots=totalInnings*benchSlotsPerInning;
+  const fairMax=Math.ceil(totalBenchSlots/n);
+  const fairMin=Math.floor(totalBenchSlots/n);
+  for(let p=0;p<n;p++){
+    // Skip the fair-max warning for players with an explicit required-bench target — their
+    // higher sit count is intentional, not an algorithm failure.
+    if(requiredBench[p]!=null) continue;
+    if(benchCount[p]>fairMax)
+      warnings.push(`${players[p].name} sat ${benchCount[p]} innings (fair max ${fairMax})`);
+  }
+  // Per-player required-bench validation: report any target that wasn't hit exactly.
+  for(let p=0;p<n;p++){
+    const req=requiredBench[p];
+    if(req==null) continue;
+    if(benchCount[p]!==req){
+      warnings.push(`${players[p].name} required ${req} bench inning(s) but ended with ${benchCount[p]}`);
+    }
+  }
+  if(warnings.length){
+    errDiv.innerHTML=`<div class="warn-msg">Warning — constraints could not be fully met: ${warnings.join('; ')}. Consider adding players or relaxing restrictions.</div>`;
+  }
+
+  lastResult={schedule,players,totalInnings,pitchSwitch,fieldSwitch,benchCount,pitchCount,catchCount,ifCount,ofCount,fairMin,fairMax,use4OF:RULES.use4OF};
+  renderTable(schedule,players,totalInnings,benchCount,ifCount,ofCount);
+  // Default the innings-played input to the full schedule length
+  const ipInput=document.getElementById('inningsPlayed');
+  if(ipInput){ipInput.max=totalInnings; ipInput.value=totalInnings;}
+  document.getElementById('resultSection').style.display='';
+}
+
+function renderTable(schedule,players,totalInnings,benchCount,ifCount,ofCount){
+  const tbl=document.getElementById('rotTable');
+  const lockSet=new Set(manualCells.map(c=>`${c.inning}|${c.playerName}`));
+  // 3-OF mode: drop RCF from the dropdown and label LCF as "CF" in the UI.
+  // The underlying data still uses 'LCF' so position-summary aggregation stays consistent.
+  const use4OF = (lastResult && typeof lastResult.use4OF==='boolean')
+    ? lastResult.use4OF
+    : (document.getElementById('ruleUse4OF')?.checked ?? true);
+  const POS_OPTS_BASE=['P','C','1B','2B','3B','SS','LF','LCF','RCF','RF','BN'];
+  const POS_OPTS = use4OF ? POS_OPTS_BASE : POS_OPTS_BASE.filter(p=>p!=='RCF');
+  const labelFor = p => (!use4OF && p==='LCF') ? 'CF' : p;
+  let html='<thead><tr><th>Inning</th>';
+  players.forEach(p=>html+=`<th title="${p.name}">${p.name.split(' ')[0]}</th>`);
+  html+='</tr></thead><tbody>';
+  for(let i=0;i<totalInnings;i++){
+    html+=`<tr><td>Inn. ${i+1}</td>`;
+    players.forEach((p,pi)=>{
+      const pos=schedule[i][pi]||'BN';
+      const cls='pos-'+pos.replace(/[^A-Za-z0-9]/g,'');
+      const locked=lockSet.has(`${i}|${p.name}`);
+      const safeName=p.name.replace(/'/g,"\\'");
+      // Build the position options. When a cell is locked, prepend an "Unlock" option
+      // (with a divider) so it's the first thing the user sees when they open the dropdown,
+      // not buried at the bottom of the position list.
+      let opts='';
+      if(locked){
+        opts+='<option value="__UNLOCK__">\u{1F513} Unlock this cell</option>';
+        opts+='<option value="" disabled>──────────</option>';
+      }
+      opts+=POS_OPTS.map(o=>`<option value="${o}"${o===pos?' selected':''}>${labelFor(o)}</option>`).join('');
+      const tip=locked?'Locked — pick another position to change, or pick "🔓 Unlock this cell" at the top of the list to release just this lock.':'Pick a position to lock this cell. Use the Clear button below to remove all locks.';
+      html+=`<td><select class="cell-select ${cls}${locked?' locked':''}" data-player="${safeName}" data-inning="${i}" onchange="setManualCell('${safeName}',${i},this.value)" title="${tip}">${opts}</select></td>`;
+    });
+    html+='</tr>';
+  }
+  html+='</tbody>';
+  tbl.innerHTML=html;
+
+  const bs=document.getElementById('benchSummary');
+  const bStr=players.map((p,i)=>`${p.name.split(' ')[0]}: ${benchCount[i]}`).join(' &nbsp;|&nbsp; ');
+  const ifStr=players.map((p,i)=>`${p.name.split(' ')[0]}: ${ifCount[i]}`).join(' &nbsp;|&nbsp; ');
+  const ofStr=players.map((p,i)=>`${p.name.split(' ')[0]}: ${ofCount[i]}`).join(' &nbsp;|&nbsp; ');
+  bs.innerHTML=
+    `<div style="width:100%"><span style="font-weight:500;color:var(--color-text-primary)">Bench innings:</span>&nbsp;${bStr}</div>`+
+    `<div style="width:100%"><span style="font-weight:500;color:var(--color-text-primary)">Infield innings (incl. P/C):</span>&nbsp;${ifStr}</div>`+
+    `<div style="width:100%"><span style="font-weight:500;color:var(--color-text-primary)">Outfield innings:</span>&nbsp;${ofStr}</div>`;
+}
+
+function exportXLSX(){
+  if(!lastResult)return;
+  const{schedule,players,totalInnings,pitchSwitch,fieldSwitch,benchCount,pitchCount,catchCount,ifCount,ofCount,fairMin,fairMax}=lastResult;
+  const wb=XLSX.utils.book_new();
+
+  const rosterData=[
+    ['Little League Defensive Rotation Planner — 4-Outfielder Format'],
+    [],
+    ['GAME SETTINGS'],
+    ['Total Innings',totalInnings],
+    ['Pitcher Switch Every (inn.)',pitchSwitch],
+    ['Field Rotation Every (inn.)',fieldSwitch],
+    ['Bench Rotation','Fair — no 2nd bench until all players have sat once'],
+    ['Expected Bench Innings Per Player',`${fairMin}–${fairMax}`],
+    [],
+    ['RULES','No pitcher after catching | No player pitches AND catches same game | Bench rotates fairly (no 2nd sit until everyone has sat once) | No back-to-back bench innings | At least 3 field innings between a player’s bench innings | Infield and outfield innings spread evenly across players'],
+    [],
+    ['ROSTER'],
+    ['#','Name',...POS,'Notes','Forced Bench Innings'],
+    ...players.map((p,i)=>[i+1,p.name,...p.cant.map(r=>r?'YES':'NO'),p.notes,(p.forceBench||[]).map(x=>x+1).join(', ')])
+  ];
+  const wsRoster=XLSX.utils.aoa_to_sheet(rosterData);
+  wsRoster['!cols']=[{wch:4},{wch:22},...POS.map(()=>({wch:8})),{wch:20},{wch:18}];
+  XLSX.utils.book_append_sheet(wb,wsRoster,'Roster & Settings');
+
+  const schedHeader=['Inning',...players.map(p=>p.name)];
+  const schedRows=schedule.map((row,i)=>[`Inning ${i+1}`,...players.map((_,pi)=>row[pi]||'-')]);
+  const wsSched=XLSX.utils.aoa_to_sheet([schedHeader,...schedRows]);
+  wsSched['!cols']=[{wch:10},...players.map(()=>({wch:14}))];
+  XLSX.utils.book_append_sheet(wb,wsSched,'Rotation Schedule');
+
+  const posCountFull=Array.from({length:players.length},()=>Array(10).fill(0));
+  schedule.forEach(row=>players.forEach((_,pi)=>{const idx=POS.indexOf(row[pi]);if(idx>=0)posCountFull[pi][idx]++;}));
+  const summaryData=[
+    ['POSITION COUNT SUMMARY'],
+    [],
+    ['Player',...POS,'Bench','Infield Total (incl. P/C)','Outfield Total','Innings Pitched','Innings Caught'],
+    ...players.map((p,pi)=>[p.name,...posCountFull[pi],benchCount[pi],ifCount[pi],ofCount[pi],pitchCount[pi],catchCount[pi]])
+  ];
+  const wsSummary=XLSX.utils.aoa_to_sheet(summaryData);
+  wsSummary['!cols']=[{wch:22},...POS.map(()=>({wch:8})),{wch:8},{wch:22},{wch:14},{wch:16},{wch:16}];
+  XLSX.utils.book_append_sheet(wb,wsSummary,'Position Summary');
+
+  XLSX.writeFile(wb,'little_league_rotation.xlsx');
+}
+
+/* ============================================================
+   PRINT: paper lineup chart, transposed (player rows, inning cols)
+   ------------------------------------------------------------
+   Builds a B&W friendly version of the rotation in a hidden div,
+   then triggers the browser's print dialog. Player rows follow
+   the on-screen batting order; bench cells are clearly marked
+   with a gray background and italic text so they're obvious
+   even on a black-and-white printout.
+   ============================================================ */
+function printLineup(gameData){
+  // gameData (optional): a saved-game object from the history list. When provided,
+  // print uses that game's schedule/players/date instead of the current lastResult.
+  const source=gameData||lastResult;
+  if(!source){ alert('Generate a rotation first.'); return; }
+  const {schedule,players,totalInnings}=source;
+  const use4OF = (source.use4OF!==undefined)
+    ? source.use4OF
+    // Old saved games may not have use4OF — infer from schedule (RCF appears only in 4-OF games).
+    : (schedule||[]).some(row=>(row||[]).some(p=>p==='RCF'));
+  const pitchSwitch=source.pitchSwitch||parseInt(document.getElementById('pitchSwitch')?.value,10)||2;
+  const fieldSwitch=source.fieldSwitch||parseInt(document.getElementById('fieldSwitch')?.value,10)||2;
+  const teamName=(DATA.currentTeamId && DATA.teams[DATA.currentTeamId]) ? DATA.teams[DATA.currentTeamId].name : '';
+  const dateInput=(gameData && gameData.date) ? gameData.date : (document.getElementById('gameDate')?.value || '');
+  const labelFor=p=>(!use4OF && p==='LCF') ? 'CF' : p;
+  const escapeHTML=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  // Build the transposed chart: rows = players (batting order), columns = innings.
+  let table='<table class="print-lineup-table"><thead><tr>';
+  table+='<th class="num">#</th><th class="player">Player</th>';
+  for(let i=0;i<totalInnings;i++) table+=`<th>Inn ${i+1}</th>`;
+  table+='</tr></thead><tbody>';
+  players.forEach((pl,pi)=>{
+    table+=`<tr><td class="num">${pi+1}</td><td class="player">${escapeHTML(pl.name)}</td>`;
+    for(let i=0;i<totalInnings;i++){
+      const pos=schedule[i][pi]||'BN';
+      const cls=(pos==='BN')?'bench-cell':'';
+      table+=`<td class="${cls}">${escapeHTML(labelFor(pos))}</td>`;
+    }
+    table+='</tr>';
+  });
+  table+='</tbody></table>';
+
+  const dateLine=dateInput || '__________';
+  const view=document.getElementById('printLineupView');
+  view.innerHTML=
+    '<div class="print-page">'+
+      '<div class="print-header">'+
+        `<div class="print-title">${escapeHTML(teamName?teamName+' — Lineup':'Game Lineup')}</div>`+
+        '<div class="print-meta">'+
+          `<div><span class="lbl">Date:</span> ${escapeHTML(dateLine)}</div>`+
+          '<div><span class="lbl">Opponent:</span> ____________________</div>'+
+          `<div><span class="lbl">Field:</span> ${use4OF?'4 outfielders':'3 outfielders'} &middot; ${totalInnings} innings</div>`+
+          `<div><span class="lbl">Pitcher every:</span> ${pitchSwitch} inn. &middot; <span class="lbl">Field every:</span> ${fieldSwitch} inn.</div>`+
+        '</div>'+
+      '</div>'+
+      table+
+      '<div class="print-footer">'+
+        '<div class="print-notes"><span class="lbl">Notes / Substitutions:</span><div class="print-notes-box"></div></div>'+
+        '<div class="print-sig-row">'+
+          '<div class="print-sig"><span class="lbl">Coach:</span><div class="sig-line"></div></div>'+
+          '<div class="print-sig"><span class="lbl">Asst. Coach:</span><div class="sig-line"></div></div>'+
+          '<div class="print-sig"><span class="lbl">Final Score:</span><div class="sig-line"></div></div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+
+  // Give layout a tick to apply, then open the system print dialog.
+  setTimeout(()=>{ window.print(); }, 50);
+}
+
+/* ============================================================
+   HISTORIC GAME VIEWER — modal that re-renders a saved game's
+   rotation chart so you can review (or print) it later.
+   ============================================================ */
+let _currentlyViewedGame=null;
+
+function viewSavedGame(idx){
+  if(!DATA.currentTeamId){ alert('Select a team first.'); return; }
+  const t=DATA.teams[DATA.currentTeamId];
+  const sorted=(t.games||[]).slice().sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  const game=sorted[idx];
+  if(!game){ alert('Game not found.'); return; }
+  _currentlyViewedGame=game;
+
+  // For old saves without use4OF, infer from the schedule (RCF appears only in 4-OF games).
+  const use4OF=(game.use4OF!==undefined) ? game.use4OF : (game.schedule||[]).some(row=>(row||[]).some(p=>p==='RCF'));
+  const planned=game.plannedInnings||game.totalInnings;
+  const inningsLabel=(game.totalInnings<planned) ? `${game.totalInnings} of ${planned} innings` : `${game.totalInnings} innings`;
+  const teamName=t.name||'';
+
+  document.getElementById('gameViewerTitle').textContent=
+    `${teamName ? teamName+' — ' : ''}Game ${game.date || ''} (${inningsLabel})`;
+
+  // Meta strip
+  document.getElementById('gameViewerMeta').innerHTML=
+    `<strong>Date:</strong> ${game.date||'—'} &middot; `+
+    `<strong>Players:</strong> ${game.players.length} &middot; `+
+    `<strong>Format:</strong> ${use4OF?'4 outfielders':'3 outfielders'} &middot; `+
+    `<strong>Innings:</strong> ${inningsLabel}`;
+
+  // Render the rotation chart (read-only, no dropdowns)
+  renderHistoricChart(document.getElementById('gameViewerChart'),game.schedule,game.players,game.totalInnings,use4OF);
+
+  // Per-player totals strip (matches the live bench summary)
+  const sumStr=(arr,label)=>{
+    if(!arr||!arr.length) return '';
+    const parts=game.players.map((p,i)=>`${p.name.split(' ')[0]}: ${arr[i]||0}`).join(' &nbsp;|&nbsp; ');
+    return `<div style="width:100%"><span style="font-weight:900;color:#d4a017">${label}:</span>&nbsp;${parts}</div>`;
+  };
+  document.getElementById('gameViewerSummary').innerHTML=
+    sumStr(game.benchCount,'Bench innings')+
+    sumStr(game.ifCount,'Infield innings (incl. P/C)')+
+    sumStr(game.ofCount,'Outfield innings');
+
+  document.getElementById('gameViewerModal').classList.add('open');
+  // Esc-to-close
+  document.addEventListener('keydown',_gameViewerEsc);
+}
+
+function _gameViewerEsc(e){ if(e.key==='Escape') closeGameViewer(); }
+
+function closeGameViewer(){
+  document.getElementById('gameViewerModal').classList.remove('open');
+  document.removeEventListener('keydown',_gameViewerEsc);
+  _currentlyViewedGame=null;
+}
+
+function printCurrentlyViewedGame(){
+  if(!_currentlyViewedGame){ alert('No game is currently open.'); return; }
+  printLineup(_currentlyViewedGame);
+}
+
+// Render a saved game's rotation chart into `target` as read-only tiles.
+// Uses the same .rotation-table / .cell-select styling as the live chart so
+// it stays visually consistent — just without the editable dropdowns.
+function renderHistoricChart(target,schedule,players,totalInnings,use4OF){
+  const labelFor=p=>(!use4OF && p==='LCF') ? 'CF' : p;
+  const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let html='<table class="rotation-table"><thead><tr><th>Inning</th>';
+  players.forEach(p=>html+=`<th title="${esc(p.name)}">${esc(p.name.split(' ')[0])}</th>`);
+  html+='</tr></thead><tbody>';
+  for(let i=0;i<totalInnings;i++){
+    html+=`<tr><td>Inn. ${i+1}</td>`;
+    players.forEach((p,pi)=>{
+      const pos=(schedule[i] && schedule[i][pi]) || 'BN';
+      const cls='pos-'+pos.replace(/[^A-Za-z0-9]/g,'');
+      html+=`<td><div class="cell-select ${cls}" style="cursor:default;pointer-events:none">${esc(labelFor(pos))}</div></td>`;
+    });
+    html+='</tr>';
+  }
+  html+='</tbody></table>';
+  target.innerHTML=html;
+}
+
+/* ============================================================
+   PERSISTENCE: teams, rosters, saved games (localStorage)
+   ============================================================ */
+const STORAGE_KEY='llrp_data_v1';
+function loadData(){
+  try{const raw=localStorage.getItem(STORAGE_KEY); if(!raw)return {teams:{},currentTeamId:null}; const d=JSON.parse(raw); if(!d.teams)d.teams={}; return d;}
+  catch(e){return {teams:{},currentTeamId:null};}
+}
+function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(DATA));}
+let DATA=loadData();
+
+function genId(){return 't_'+Math.random().toString(36).slice(2,10);}
+
+function createTeam(){
+  const name=prompt('Team name:');
+  if(!name||!name.trim()) return;
+  const id=genId();
+  DATA.teams[id]={name:name.trim(),roster:null,games:[],manualCells:[]};
+  DATA.currentTeamId=id;
+  manualCells=[];
+  saveData();
+  refreshTeamUI();
+  // New team starts with empty roster
+  document.getElementById('rosterRows').innerHTML='';
+  for(let i=0;i<11;i++) addRow();
+}
+
+function renameTeam(){
+  if(!DATA.currentTeamId){alert('Create a team first.');return;}
+  const t=DATA.teams[DATA.currentTeamId];
+  const name=prompt('Team name:',t.name);
+  if(!name||!name.trim())return;
+  t.name=name.trim();
+  saveData();
+  refreshTeamUI();
+}
+
+function deleteTeam(){
+  if(!DATA.currentTeamId){alert('No team selected.');return;}
+  const t=DATA.teams[DATA.currentTeamId];
+  if(!confirm(`Delete team "${t.name}" and all ${t.games.length} saved game(s)? This cannot be undone.`))return;
+  delete DATA.teams[DATA.currentTeamId];
+  const ids=Object.keys(DATA.teams);
+  DATA.currentTeamId=ids[0]||null;
+  saveData();
+  if(DATA.currentTeamId&&DATA.teams[DATA.currentTeamId].roster){
+    loadRosterIntoForm(DATA.teams[DATA.currentTeamId].roster);
+    loadManualCells(DATA.teams[DATA.currentTeamId].manualCells||DATA.teams[DATA.currentTeamId].locks||[]);
+    loadRulesIntoForm(DATA.teams[DATA.currentTeamId].rules);
+  }else{
+    document.getElementById('rosterRows').innerHTML='';
+    SAMPLE.forEach(n=>addRow(n));
+    manualCells=[];
+  }
+  syncOFLabels();
+  refreshTeamUI();
+}
+
+function selectTeam(id){
+  if(!id||!DATA.teams[id])return;
+  DATA.currentTeamId=id;
+  saveData();
+  const t=DATA.teams[id];
+  if(t.roster) loadRosterIntoForm(t.roster);
+  loadManualCells(t.manualCells||t.locks||[]);
+  loadRulesIntoForm(t.rules);
+  syncOFLabels();
+  refreshTeamUI();
+}
+
+/* Capture roster as raw form values (preserves the user's bench-innings text). */
+function captureRoster(){
+  const rows=document.querySelectorAll('.player-row');
+  return Array.from(rows).map(row=>{
+    const inputs=row.querySelectorAll('input[type=text]');
+    const numInputs=row.querySelectorAll('input[type=number].bench-req');
+    const btns=row.querySelectorAll('.pos-toggle');
+    return {
+      name:inputs[0]?inputs[0].value:'',
+      cant:Array.from(btns).map(b=>b.classList.contains('restricted')),
+      notes:inputs[1]?inputs[1].value:'',
+      requiredBench:numInputs[0]?numInputs[0].value:''
+    };
+  });
+}
+
+function loadRosterIntoForm(roster){
+  const rows=document.getElementById('rosterRows');
+  rows.innerHTML='';
+  // Backward compat: older saves used `forceBench` (a string of inning numbers); newer ones
+  // use `requiredBench` (a count). Prefer the new field, fall back to nothing for old data.
+  roster.forEach(p=>addRow(p.name||'',p.cant||Array(10).fill(false),p.notes||'','',p.requiredBench||''));
+}
+
+function saveRoster(){
+  if(!DATA.currentTeamId){alert('Create a team first using "+ New team".');return;}
+  const roster=captureRoster();
+  const rules=captureRules();
+  DATA.teams[DATA.currentTeamId].roster=roster;
+  DATA.teams[DATA.currentTeamId].manualCells=manualCells.slice();
+  DATA.teams[DATA.currentTeamId].rules=rules;
+  saveData();
+  flashMsg(`Roster saved (${roster.filter(p=>p.name.trim()).length} players, ${manualCells.length} manual pick${manualCells.length===1?'':'s'}).`);
+}
+
+function saveLineup(){
+  if(!DATA.currentTeamId){alert('Create a team first using "+ New team".');return;}
+  if(!lastResult){alert('Generate a rotation first.');return;}
+  const dateInput=document.getElementById('gameDate').value;
+  const date=dateInput||new Date().toISOString().slice(0,10);
+  // How many innings were actually played (≤ scheduled total)
+  const ipInputVal=parseInt(document.getElementById('inningsPlayed').value);
+  const planned=lastResult.totalInnings;
+  let inningsPlayed=isNaN(ipInputVal)?planned:Math.max(1,Math.min(planned,ipInputVal));
+  // Truncate schedule and recompute per-player totals from played innings only
+  const playedSchedule=lastResult.schedule.slice(0,inningsPlayed).map(row=>row.slice());
+  const numPlayers=lastResult.players.length;
+  const pitchCount=Array(numPlayers).fill(0);
+  const catchCount=Array(numPlayers).fill(0);
+  const benchCount=Array(numPlayers).fill(0);
+  const ifCount=Array(numPlayers).fill(0);
+  const ofCount=Array(numPlayers).fill(0);
+  playedSchedule.forEach(row=>{
+    row.forEach((pos,pi)=>{
+      if(pos==='P') pitchCount[pi]++;
+      if(pos==='C') catchCount[pi]++;
+      if(pos==='BN') benchCount[pi]++;
+      if(['P','C','1B','2B','3B','SS'].includes(pos)) ifCount[pi]++;
+      else if(['LF','LCF','RCF','RF'].includes(pos)) ofCount[pi]++;
+    });
+  });
+  const game={
+    date,
+    schedule:playedSchedule,
+    players:lastResult.players.map(p=>({name:p.name})),
+    totalInnings:inningsPlayed,
+    plannedInnings:planned,
+    pitchCount,catchCount,benchCount,ifCount,ofCount,
+    // Extra metadata so historic-game views know how to label things (3-OF mode renames LCF→CF).
+    use4OF: lastResult.use4OF!==undefined ? lastResult.use4OF : true,
+    pitchSwitch: lastResult.pitchSwitch,
+    fieldSwitch: lastResult.fieldSwitch,
+    savedAt:Date.now()
+  };
+  DATA.teams[DATA.currentTeamId].games.push(game);
+  saveData();
+  refreshTeamUI();
+  const note=inningsPlayed<planned?` (${inningsPlayed} of ${planned} innings played)`:'';
+  flashMsg(`Lineup saved for ${date}${note}.`);
+}
+
+function deleteGame(idx){
+  const t=DATA.teams[DATA.currentTeamId];
+  const sorted=t.games.slice().sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  const target=sorted[idx];
+  const realIdx=t.games.indexOf(target);
+  if(realIdx<0) return;
+  if(!confirm(`Delete saved game from ${target.date}?`))return;
+  t.games.splice(realIdx,1);
+  saveData();
+  refreshTeamUI();
+}
+
+function flashMsg(text){
+  const e=document.getElementById('errMsg');
+  e.innerHTML=`<div class="warn-msg" style="background:var(--color-background-success);color:var(--color-text-success);border-color:var(--color-border-success)">${text}</div>`;
+  setTimeout(()=>{if(e.firstChild&&e.firstChild.textContent===text)e.innerHTML='';},2500);
+}
+
+function refreshTeamUI(){
+  const sel=document.getElementById('teamSelect');
+  sel.innerHTML='';
+  const ids=Object.keys(DATA.teams);
+  if(ids.length===0){
+    const opt=document.createElement('option');
+    opt.value=''; opt.textContent='(no teams — click "+ New team")';
+    sel.appendChild(opt);
+  }else{
+    ids.forEach(id=>{
+      const opt=document.createElement('option');
+      opt.value=id; opt.textContent=DATA.teams[id].name;
+      if(id===DATA.currentTeamId) opt.selected=true;
+      sel.appendChild(opt);
+    });
+  }
+  renderSavedGames();
+  renderSeasonSummary();
+}
+
+function renderSavedGames(){
+  const div=document.getElementById('savedGamesList');
+  if(!DATA.currentTeamId){div.innerHTML='<div class="empty-msg">Create a team to start tracking games.</div>';return;}
+  const games=DATA.teams[DATA.currentTeamId].games||[];
+  if(games.length===0){div.innerHTML='<div class="empty-msg">No games saved yet for this team.</div>';return;}
+  const sorted=games.slice().sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  let html='<table class="summary-table"><thead><tr><th>Game date</th><th>Players</th><th>Innings played</th><th></th></tr></thead><tbody>';
+  sorted.forEach((g,i)=>{
+    const planned=g.plannedInnings||g.totalInnings;
+    const inningsCell=(g.totalInnings<planned)?`${g.totalInnings} of ${planned}`:`${g.totalInnings}`;
+    html+=`<tr><td>${g.date}</td><td>${g.players.length}</td><td>${inningsCell}</td><td style="text-align:right;white-space:nowrap"><button class="btn-mini" onclick="viewSavedGame(${i})" style="margin-right:6px" title="View this game's rotation chart">view</button><button class="btn-mini btn-danger" onclick="deleteGame(${i})">delete</button></td></tr>`;
+  });
+  html+='</tbody></table>';
+  div.innerHTML=html;
+}
+
+function renderSeasonSummary(){
+  const div=document.getElementById('seasonSummary');
+  if(!DATA.currentTeamId){div.innerHTML='<div class="empty-msg">Create a team to track season totals.</div>';return;}
+  const games=DATA.teams[DATA.currentTeamId].games||[];
+  if(games.length===0){div.innerHTML='<div class="empty-msg">No games saved yet — season totals will appear here once you save lineups.</div>';return;}
+  const COLS=['P','C','1B','2B','3B','SS','LF','LCF','RCF','RF','BN'];
+  const totals={}; const order=[];
+  games.forEach(g=>{
+    g.players.forEach((pl,pi)=>{
+      if(!totals[pl.name]){
+        totals[pl.name]={games:0,IF:0,OF:0};
+        COLS.forEach(c=>totals[pl.name][c]=0);
+        order.push(pl.name);
+      }
+      totals[pl.name].games++;
+      g.schedule.forEach(row=>{
+        const pos=row[pi];
+        if(totals[pl.name][pos]!==undefined) totals[pl.name][pos]++;
+        if(['P','C','1B','2B','3B','SS'].includes(pos)) totals[pl.name].IF++;
+        else if(['LF','LCF','RCF','RF'].includes(pos)) totals[pl.name].OF++;
+      });
+    });
+  });
+  let html='<table class="summary-table"><thead><tr><th>Player</th><th>Games</th>'+
+    COLS.map(c=>`<th>${c}</th>`).join('')+
+    '<th>IF total<br>(incl P/C)</th><th>OF total</th></tr></thead><tbody>';
+  order.forEach(name=>{
+    const t=totals[name];
+    html+=`<tr><td>${name}</td><td>${t.games}</td>${COLS.map(c=>`<td>${t[c]}</td>`).join('')}<td>${t.IF}</td><td>${t.OF}</td></tr>`;
+  });
+  html+='</tbody></table>';
+  // Merge-player tool: lets the user fold one player's saved-game history into another.
+  // Useful when a player's display name changed and the season summary splits across rows.
+  const opts=order.map(n=>`<option value="${n.replace(/"/g,'&quot;')}">${n}</option>`).join('');
+  const mergeUI=`<div class="merge-tool" style="margin-top:18px;padding:14px 16px;background:linear-gradient(180deg,rgba(212,160,23,0.18),rgba(0,0,0,0.35));border:2px solid #d4a017;border-radius:5px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08),0 2px 6px rgba(0,0,0,0.35)">
+    <div style="font-family:'Arial Black',sans-serif;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#d4a017;font-weight:900;margin-bottom:6px;text-shadow:1px 1px 0 rgba(0,0,0,0.55)">&#128279; Merge Player History</div>
+    <div style="font-size:11px;color:#f5e9c8;margin-bottom:10px;line-height:1.5">If a player's name was changed mid-season and now their stats are split into two rows above, pick the old name in <strong>From</strong>, the new name in <strong>Into</strong>, and click <strong>Merge</strong>. The "from" name gets rewritten everywhere in this team's saved games.</div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
+      <label style="font-family:'Arial Black',sans-serif;font-size:10px;color:#d4a017;letter-spacing:.1em;text-transform:uppercase">From:</label>
+      <select id="mergeFrom" style="min-width:160px;padding:7px 10px;font-size:13px"><option value="">— pick old name —</option>${opts}</select>
+      <span style="color:#d4a017;font-weight:900;font-size:18px">&rarr;</span>
+      <label style="font-family:'Arial Black',sans-serif;font-size:10px;color:#d4a017;letter-spacing:.1em;text-transform:uppercase">Into:</label>
+      <select id="mergeTo" style="min-width:160px;padding:7px 10px;font-size:13px"><option value="">— pick keeper name —</option>${opts}</select>
+      <button class="btn-save" onclick="mergePlayerInCurrentTeam()">Merge</button>
+    </div>
+  </div>`;
+  div.innerHTML=html+mergeUI;
+}
+
+// Merge action invoked from the renderSeasonSummary tool. Renames all references to
+// "from" with "to" inside the current team's saved games and roster snapshot.
+function mergePlayerInCurrentTeam(){
+  if(!DATA.currentTeamId){alert('Select a team first.');return;}
+  const fromSel=document.getElementById('mergeFrom');
+  const toSel=document.getElementById('mergeTo');
+  const from=fromSel?fromSel.value:'';
+  const to=toSel?toSel.value:'';
+  if(!from||!to){alert('Pick a player to merge FROM and a player to merge INTO.');return;}
+  if(from===to){alert('Pick two different players.');return;}
+  if(!confirm(`Merge "${from}" into "${to}"?\nEvery occurrence of "${from}" in this team's saved games and roster will be renamed to "${to}". This cannot be undone.`)) return;
+  const team=DATA.teams[DATA.currentTeamId];
+  let touched=0;
+  (team.games||[]).forEach(g=>{
+    (g.players||[]).forEach(p=>{
+      if(p && p.name===from){ p.name=to; touched++; }
+    });
+  });
+  if(Array.isArray(team.roster)){
+    team.roster.forEach(p=>{
+      if(p && p.name===from){ p.name=to; touched++; }
+    });
+  }
+  saveData();
+  refreshTeamUI();
+  flashMsg(`Merged ${touched} entr${touched===1?'y':'ies'}: "${from}" → "${to}".`);
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+// Default the date input to today
+(function(){
+  const inp=document.getElementById('gameDate');
+  if(inp) inp.value=new Date().toISOString().slice(0,10);
+})();
+
+/* ------------------------------------------------------------
+   DATA NORMALIZATION — player rename pass
+   ------------------------------------------------------------
+   Two players were renamed on the live roster after several
+   games were saved. The saved-game records still reference the
+   old names, which splits each player's season totals across
+   two rows. Rewrite the old names inside saved games so the
+   season summary re-aggregates everything under the active
+   names (Fullam and Cameron).
+
+   This used to be a one-time flagged migration but the flag
+   could be set before the rename actually applied (e.g. due
+   to a stricter team-name match), leaving stale "Cam Fullam"
+   / "Cameron Smith" entries behind. The pass below is now
+   idempotent (renames are no-ops on already-clean data) and
+   runs every load, with whitespace- and case-tolerant matching
+   across all teams.
+   ------------------------------------------------------------ */
+function mergePlayerNamesInSavedGames(renames,opts){
+  opts=opts||{};
+  // Aggressively normalize for matching:
+  //   1. NFC Unicode normalize (handles composed vs decomposed forms)
+  //   2. Strip every kind of whitespace including non-breaking and zero-width
+  //   3. Strip ASCII punctuation, so "Cam-Fullam" / "Cam.Fullam" / "Cam, Fullam" all match
+  //   4. Lowercase
+  const norm=s=>String(s||'')
+    .normalize('NFC')
+    .replace(/[\s ​-‍﻿]+/g,'')
+    .replace(/[.,'"`!?\-_/\\]+/g,'')
+    .toLowerCase();
+  const map={};
+  Object.keys(renames).forEach(k=>{ map[norm(k)]=renames[k]; });
+  // Diagnostic: list every distinct stored player name so a user can see exactly
+  // what's living in their data (super useful when an auto-rename "isn't catching").
+  const distinct=new Set();
+  Object.values((DATA&&DATA.teams)||{}).forEach(team=>{
+    if(!team) return;
+    (team.games||[]).forEach(g=>(g.players||[]).forEach(p=>{ if(p&&p.name) distinct.add(p.name); }));
+    (team.roster||[]).forEach(p=>{ if(p&&p.name) distinct.add(p.name); });
+  });
+  if(distinct.size>0){
+    console.log('[llrp] Distinct stored player names ('+distinct.size+'):',[...distinct].sort());
+  }
+  let touched=0, teamsTouched=0, hits=[];
+  Object.values((DATA&&DATA.teams)||{}).forEach(team=>{
+    if(!team) return;
+    if(opts.teamFilter && !opts.teamFilter(team)) return;
+    let teamTouched=false;
+    (team.games||[]).forEach(g=>{
+      (g.players||[]).forEach(p=>{
+        if(!p) return;
+        const hit=map[norm(p.name)];
+        if(hit && p.name!==hit){ hits.push(`"${p.name}" → "${hit}"`); p.name=hit; touched++; teamTouched=true; }
+      });
+    });
+    if(Array.isArray(team.roster)){
+      team.roster.forEach(p=>{
+        if(!p) return;
+        const hit=map[norm(p.name)];
+        if(hit && p.name!==hit){ hits.push(`"${p.name}" → "${hit}" (roster)`); p.name=hit; touched++; teamTouched=true; }
+      });
+    }
+    if(teamTouched) teamsTouched++;
+  });
+  if(touched>0){
+    try{ saveData(); }catch(_){}
+    console.log('[llrp] Auto-rename pass: '+touched+' entries across '+teamsTouched+' team(s).',hits);
+  }else{
+    console.log('[llrp] Auto-rename pass: no matches found. If you expected one, use the "Merge player history" tool in the Season Summary section.');
+  }
+  // Clear any obsolete one-time flag from earlier versions so it can't suppress future passes
+  try{ localStorage.removeItem('llrp_migration_portside_renames_v1'); }catch(_){}
+  return {touched,teamsTouched,hits};
+}
+// Apply the known renames every load (idempotent — running it twice does nothing extra).
+mergePlayerNamesInSavedGames({
+  'Cam Fullam':'Fullam',
+  'Cameron Smith':'Cameron'
+});
+
+// Load saved roster if a team exists; otherwise show sample roster
+if(DATA.currentTeamId && DATA.teams[DATA.currentTeamId] && DATA.teams[DATA.currentTeamId].roster){
+  loadRosterIntoForm(DATA.teams[DATA.currentTeamId].roster);
+  loadManualCells(DATA.teams[DATA.currentTeamId].manualCells||DATA.teams[DATA.currentTeamId].locks||[]);
+  loadRulesIntoForm(DATA.teams[DATA.currentTeamId].rules);
+}else{
+  SAMPLE.forEach(n=>addRow(n));
+}
+// Re-label LCF/RCF columns based on the current 4-OF rule, and re-sync whenever the user toggles it.
+syncOFLabels();
+document.getElementById('ruleUse4OF')?.addEventListener('change',syncOFLabels);
+refreshTeamUI();
+</script>
