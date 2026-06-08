@@ -359,6 +359,16 @@ input,select,textarea{font-family:inherit;font-size:16px} /* 16px prevents iOS z
   padding:8px 10px;font-size:13px;
   margin-top:4px;
 }
+.pc-bench-target{
+  background:#f5e9c8;color:#1a1a1a;
+  border:1px solid #5a3825;border-radius:6px;
+  padding:7px 10px;font-weight:700;font-size:14px;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,0.2);
+}
+.pc-bench-target.has-target{
+  border-color:#d4a017;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,0.2),0 0 0 1px #d4a017;
+}
 
 /* ---------- RULES ---------- */
 .rule-check{
@@ -773,7 +783,7 @@ button,select,.cell-select,.pos-toggle,.tab-btn,.team-btn,.pc-num,.pc-del,.pc-to
       <div class="section">
         <div class="section-title">Player Roster</div>
         <div class="rule-note">
-          Tap <strong>Restrictions &amp; Notes</strong> on any player to mark positions they <strong>cannot</strong> play (red) or add notes. Drag the gold number to reorder batting order.
+          Tap <strong>Restrictions &amp; Notes</strong> on any player to mark positions they <strong>cannot</strong> play (red), set a desired bench innings count, or add notes. Drag the gold number to reorder batting order.
         </div>
         <div id="rosterRows"></div>
         <button class="add-row-btn" onclick="addRow()">+ Add player</button>
@@ -1057,7 +1067,7 @@ function uiPrompt(msg,defaultValue){
 /* =================================================================
    ROSTER — mobile card layout (replaces wide-grid rows)
    ================================================================= */
-function addRow(name='',restrictions=Array(10).fill(false),notes='',_legacy=''){
+function addRow(name='',restrictions=Array(10).fill(false),notes='',_legacy='',desiredBench=0){
   const rows=document.getElementById('rosterRows');
   const idx=rows.children.length;
   const card=document.createElement('div');
@@ -1078,6 +1088,15 @@ function addRow(name='',restrictions=Array(10).fill(false),notes='',_legacy=''){
     <div class="pc-detail">
       <div class="pc-detail-label">Positions this player CANNOT play (tap to toggle red)</div>
       <div class="pc-pos-grid">${posBtns}</div>
+      <div class="pc-detail-label">Bench innings (overrides position prefs)</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+        <select class="pc-bench-target${desiredBench>0?' has-target':''}" onchange="this.className='pc-bench-target'+(this.value!=='0'?' has-target':'')">
+          <option value="0"${desiredBench===0?' selected':''}>Auto</option>
+          <option value="1"${desiredBench===1?' selected':''}>1 inning</option>
+          <option value="2"${desiredBench===2?' selected':''}>2 innings</option>
+        </select>
+        <span style="font-size:11px;color:#b8a878">Forces exact bench count regardless of position prefs</span>
+      </div>
       <div class="pc-detail-label">Notes</div>
       <input type="text" class="pc-notes" placeholder="Notes" value="${escAttr(notes)}">
     </div>
@@ -1433,7 +1452,9 @@ function getPlayers(){
     const cant=Array.from(btns).map(b=>b.classList.contains('restricted'));
     const notesInput=row.querySelector('.pc-notes');
     const notes=notesInput?notesInput.value.trim():'';
-    players.push({name,cant,notes,forceBench:[]});
+    const benchTargetEl=row.querySelector('.pc-bench-target');
+    const desiredBench=benchTargetEl?parseInt(benchTargetEl.value,10)||0:0;
+    players.push({name,cant,notes,forceBench:[],desiredBench});
   });
   return players;
 }
@@ -1548,6 +1569,12 @@ function generate(){
   }
 
   const benchSlotsPerInning=n-ACTIVE_FIELD_COUNT;
+  const wantBench=players.map(p=>p.desiredBench||0);
+  const totalDesiredBench=wantBench.reduce((s,v)=>s+v,0);
+  if(totalDesiredBench>totalInnings*benchSlotsPerInning){
+    errDiv.innerHTML=`<div class="err-msg">Total desired bench innings (${totalDesiredBench}) exceeds available bench slots (${totalInnings*benchSlotsPerInning}). Reduce desired bench innings or add more players.</div>`;
+    return;
+  }
   const pitchCount=Array(n).fill(0);
   const catchCount=Array(n).fill(0);
   const posCount=Array.from({length:n},()=>Array(10).fill(0));
@@ -1635,6 +1662,15 @@ function generate(){
       if(p===curPitcher) return;
       if(!assigned[p]) benchThisInning.add(p);
     });
+    // Force bench players who must hit their desired bench target and are running out of innings
+    const inningsLeft=totalInnings-inn;
+    for(let p=0;p<n;p++){
+      if(assigned[p]||benchThisInning.has(p)) continue;
+      if(wantBench[p]>0){
+        const stillNeeds=wantBench[p]-benchCount[p];
+        if(stillNeeds>0 && stillNeeds>=inningsLeft) benchThisInning.add(p);
+      }
+    }
     const remainingSlots=Math.max(0,benchSlotsPerInning-alreadyBenched-benchThisInning.size);
     if(remainingSlots>0){
       const tooSoonSinceLastBench=p=>(
@@ -1647,6 +1683,7 @@ function generate(){
         if(assigned[p]||benchThisInning.has(p)) continue;
         if(RULES.noB2B && benchedLast[p]) continue;
         if(tooSoonSinceLastBench(p)) continue;
+        if(wantBench[p]>0 && benchCount[p]>=wantBench[p]) continue; // met desired bench target
         candidates.push(p);
       }
       if(RULES.minFieldBetweenBench && candidates.length<remainingSlots){
@@ -1654,6 +1691,7 @@ function generate(){
           if(assigned[p]||benchThisInning.has(p)) continue;
           if(!tooSoonSinceLastBench(p)) continue;
           if(RULES.noB2B && benchedLast[p]) continue;
+          if(wantBench[p]>0 && benchCount[p]>=wantBench[p]) continue;
           candidates.push(p);
         }
         if(candidates.length<remainingSlots){
@@ -1664,13 +1702,26 @@ function generate(){
         for(let p=0;p<n;p++){
           if(assigned[p]||benchThisInning.has(p)||!benchedLast[p]) continue;
           if(candidates.includes(p)) continue;
+          if(wantBench[p]>0 && benchCount[p]>=wantBench[p]) continue;
           candidates.push(p);
         }
         warnings.push(`Inning ${inn+1}: had to allow a back-to-back bench.`);
       }
+      // Last resort: bench players who've met their desired bench target if still not enough candidates
+      if(candidates.length<remainingSlots){
+        for(let p=0;p<n;p++){
+          if(assigned[p]||benchThisInning.has(p)) continue;
+          if(candidates.includes(p)) continue;
+          candidates.push(p);
+        }
+      }
       candidates=shuffle(candidates);
       if(RULES.fairBench){
         candidates.sort((a,b)=>{
+          // Desired bench need takes top priority: players who still need bench innings go first
+          const aNeed=wantBench[a]>0?Math.max(0,wantBench[a]-benchCount[a]):0;
+          const bNeed=wantBench[b]>0?Math.max(0,wantBench[b]-benchCount[b]):0;
+          if(aNeed!==bNeed) return bNeed-aNeed;
           if(benchCount[a]!==benchCount[b]) return benchCount[a]-benchCount[b];
           if(RULES.noB2B && benchedLast[a]!==benchedLast[b]) return benchedLast[a]?1:-1;
           if(RULES.minFieldBetweenBench && lastBenchInning[a]!==lastBenchInning[b]) return lastBenchInning[a]-lastBenchInning[b];
@@ -1680,8 +1731,18 @@ function generate(){
         });
       }else if(RULES.noB2B||RULES.minFieldBetweenBench){
         candidates.sort((a,b)=>{
+          const aNeed=wantBench[a]>0?Math.max(0,wantBench[a]-benchCount[a]):0;
+          const bNeed=wantBench[b]>0?Math.max(0,wantBench[b]-benchCount[b]):0;
+          if(aNeed!==bNeed) return bNeed-aNeed;
           if(RULES.noB2B && benchedLast[a]!==benchedLast[b]) return benchedLast[a]?1:-1;
           if(RULES.minFieldBetweenBench && lastBenchInning[a]!==lastBenchInning[b]) return lastBenchInning[a]-lastBenchInning[b];
+          return 0;
+        });
+      }else{
+        candidates.sort((a,b)=>{
+          const aNeed=wantBench[a]>0?Math.max(0,wantBench[a]-benchCount[a]):0;
+          const bNeed=wantBench[b]>0?Math.max(0,wantBench[b]-benchCount[b]):0;
+          if(aNeed!==bNeed) return bNeed-aNeed;
           return 0;
         });
       }
@@ -1852,6 +1913,9 @@ function generate(){
   const fairMin=Math.floor(totalBenchSlots/n);
   for(let p=0;p<n;p++){
     if(benchCount[p]>fairMax) warnings.push(`${players[p].name} sat ${benchCount[p]} (fair max ${fairMax})`);
+  }
+  for(let p=0;p<n;p++){
+    if(wantBench[p]>0 && benchCount[p]<wantBench[p]) warnings.push(`${players[p].name} wanted ${wantBench[p]} bench inning${wantBench[p]>1?'s':''} but only got ${benchCount[p]} (conflict with pitcher/catcher constraints or other forced bench players)`);
   }
   if(warnings.length){
     errDiv.innerHTML=`<div class="warn-msg">Warning: ${warnings.join('; ')}.</div>`;
@@ -2082,11 +2146,13 @@ function captureRoster(){
     const nameInput=row.querySelector('.pc-name');
     const notesInput=row.querySelector('.pc-notes');
     const btns=row.querySelectorAll('.pos-toggle');
+    const benchTargetEl=row.querySelector('.pc-bench-target');
     return {
       name:nameInput?nameInput.value:'',
       cant:Array.from(btns).map(b=>b.classList.contains('restricted')),
       notes:notesInput?notesInput.value:'',
-      forceBench:''
+      forceBench:'',
+      desiredBench:benchTargetEl?parseInt(benchTargetEl.value,10)||0:0
     };
   });
 }
@@ -2094,7 +2160,7 @@ function captureRoster(){
 function loadRosterIntoForm(roster){
   const rows=document.getElementById('rosterRows');
   rows.innerHTML='';
-  roster.forEach(p=>addRow(p.name||'',p.cant||Array(10).fill(false),p.notes||'',p.forceBench||''));
+  roster.forEach(p=>addRow(p.name||'',p.cant||Array(10).fill(false),p.notes||'',p.forceBench||'',p.desiredBench||0));
 }
 
 async function saveRoster(){
