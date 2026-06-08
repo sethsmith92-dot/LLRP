@@ -593,68 +593,6 @@ input,select,textarea{font-family:inherit;font-size:16px} /* 16px prevents iOS z
   margin-bottom:6px;
 }
 
-/* ---------- LINEUP PANEL (on the Chart screen) ---------- */
-.lineup-row{
-  display:flex;align-items:center;gap:8px;
-  padding:8px 10px;margin-bottom:6px;
-  background:linear-gradient(180deg,rgba(0,0,0,0.28),rgba(0,0,0,0.12));
-  border:1px solid #5a3825;border-radius:6px;
-}
-.lineup-row.dragging{opacity:0.4}
-.lineup-row.drop-above{box-shadow:inset 0 3px 0 0 #d4a017}
-.lineup-row.drop-below{box-shadow:inset 0 -3px 0 0 #d4a017}
-.lineup-handle{
-  flex:0 0 auto;
-  min-width:30px;height:30px;border-radius:50%;
-  background:linear-gradient(180deg,#d4a017,#8c6608);
-  color:#2a1810;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Arial Black',sans-serif;
-  font-size:13px;font-weight:900;
-  cursor:grab;
-  touch-action:none;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),0 1px 2px rgba(0,0,0,0.4);
-  user-select:none;-webkit-user-select:none;
-}
-.lineup-handle:active{cursor:grabbing}
-.lineup-name{
-  flex:1;min-width:0;
-  font-family:'Arial Black',sans-serif;
-  font-size:14px;font-weight:900;
-  color:#f5e9c8;
-  text-transform:uppercase;letter-spacing:0.04em;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.lineup-remove{
-  flex:0 0 auto;
-  width:28px;height:28px;border-radius:6px;
-  background:linear-gradient(180deg,#d65555,#a02020);
-  border:1px solid #5a0a0a;color:#fff;
-  font-size:16px;font-weight:900;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  touch-action:manipulation;
-}
-.lineup-empty{
-  font-size:13px;color:#b8a878;font-style:italic;
-  padding:14px 4px;text-align:center;
-}
-.add-lineup-option{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:10px 12px;margin-bottom:6px;
-  background:rgba(0,0,0,0.25);
-  border:1px solid rgba(212,160,23,0.35);
-  border-radius:6px;
-  color:#f5e9c8;font-weight:700;font-size:14px;
-}
-.add-lineup-option button{
-  background:linear-gradient(180deg,#e8b626,#8c6608);
-  color:#2a1810;border:1px solid #5a3825;
-  border-radius:4px;padding:6px 12px;
-  font-family:'Arial Black',sans-serif;font-size:11px;font-weight:900;
-  letter-spacing:0.06em;text-transform:uppercase;
-  cursor:pointer;
-}
-
 /* ---------- IN-APP MODAL (replaces alert/confirm/prompt for iOS) ---------- */
 .modal-backdrop{
   position:fixed;inset:0;
@@ -904,15 +842,6 @@ button,select,.cell-select,.pos-toggle,.tab-btn,.team-btn,.pc-num,.pc-del,.pc-to
 
     <!-- CHART SCREEN -->
     <section class="screen" data-screen="chart">
-      <div class="section">
-        <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-          <span id="lineupTitle">Today's Lineup</span>
-          <button class="btn-mini" onclick="resetLineup()" title="Restore every roster player to the lineup">Reset</button>
-        </div>
-        <div id="lineupList"></div>
-        <button class="add-row-btn" onclick="openAddToLineup()">+ Add player to lineup</button>
-      </div>
-
       <button class="btn-generate" onclick="generate()">
         <span style="font-size:18px">&#9654;</span> Generate rotation
       </button>
@@ -1033,14 +962,6 @@ function showScreen(name){
   // Scroll main back to top when switching screens
   const main=document.getElementById('appMain');
   if(main) main.scrollTop=0;
-  // Whenever the user lands on the chart screen, re-sync the lineup with
-  // whatever roster changes might have happened on the Roster tab so the
-  // lineup panel is always current — new roster players appear at the end,
-  // deleted ones disappear, names that were edited propagate through.
-  if(name==='chart'){
-    if(typeof reconcileLineupWithRoster==='function') reconcileLineupWithRoster();
-    if(typeof renderLineupPanel==='function') renderLineupPanel();
-  }
 }
 
 function toggleTeamMenu(e){
@@ -1207,9 +1128,6 @@ async function deletePlayerRow(btn){
   if(!(await uiConfirm(`Remove ${label} from the roster?`,{okLabel:'Remove',danger:true}))) return;
   row.remove();
   renumberRosterRows();
-  // Player gone from roster → drop from lineup, refresh chart-page panel
-  reconcileLineupWithRoster();
-  renderLineupPanel();
 }
 
 // HTML5 drag-and-drop reorder
@@ -1312,10 +1230,8 @@ function attachTouchDrag(row){
 function togglePos(btn){btn.classList.toggle('restricted');}
 
 function getCurrentRosterNames(){
-  // Used by lock-validation: must align with the player list generate() sees,
-  // which is now lineup-only, so a lock pinned to someone not in tonight's
-  // lineup is silently skipped (they have no cells in the rendered chart).
-  return getLineupNames();
+  return Array.from(document.querySelectorAll('.player-card .pc-name'))
+    .map(i=>i.value.trim()).filter(Boolean);
 }
 
 /* =================================================================
@@ -1506,12 +1422,9 @@ function loadRulesIntoForm(rules){
   });
 }
 
-// Read the full roster off the DOM (every named .player-card), regardless of
-// whether the player is in tonight's lineup. Used by the lineup picker and
-// lineup-reconcile logic.
-function _readRosterFromDOM(){
+function getPlayers(){
   const rows=document.querySelectorAll('.player-card');
-  const out=[];
+  const players=[];
   rows.forEach(row=>{
     const nameInput=row.querySelector('.pc-name');
     const name=nameInput?nameInput.value.trim():'';
@@ -1520,253 +1433,9 @@ function _readRosterFromDOM(){
     const cant=Array.from(btns).map(b=>b.classList.contains('restricted'));
     const notesInput=row.querySelector('.pc-notes');
     const notes=notesInput?notesInput.value.trim():'';
-    out.push({name,cant,notes,forceBench:[]});
+    players.push({name,cant,notes,forceBench:[]});
   });
-  return out;
-}
-
-// Returns the team's current lineup as an ordered array of player names.
-// If the team has no explicit lineup, defaults to the full roster in roster order.
-// Always filters out names that no longer exist in the roster.
-function getLineupNames(){
-  const roster=_readRosterFromDOM().map(p=>p.name);
-  const rosterSet=new Set(roster);
-  const team=DATA.currentTeamId?DATA.teams[DATA.currentTeamId]:null;
-  if(!team||!Array.isArray(team.lineup)||team.lineup.length===0){
-    return roster.slice();
-  }
-  return team.lineup.filter(n=>rosterSet.has(n));
-}
-
-// Persists the lineup array on the current team.
-function setLineupNames(names){
-  if(!DATA.currentTeamId) return;
-  DATA.teams[DATA.currentTeamId].lineup=Array.isArray(names)?names.slice():[];
-  saveData();
-}
-
-// Reconciles the persisted lineup against the current roster. Drops names that
-// no longer exist in the roster, and appends any roster name that's missing
-// from the lineup (so newly added roster players show up at the end of the
-// lineup automatically without forcing the user to add them manually).
-// Returns true if the lineup actually changed.
-function reconcileLineupWithRoster(){
-  if(!DATA.currentTeamId) return false;
-  const team=DATA.teams[DATA.currentTeamId];
-  const roster=_readRosterFromDOM().map(p=>p.name);
-  const rosterSet=new Set(roster);
-  let lineup=Array.isArray(team.lineup)?team.lineup.slice():null;
-  if(!lineup||lineup.length===0){
-    // No explicit lineup yet → derive from current roster, in roster order.
-    team.lineup=roster.slice();
-    return true;
-  }
-  const before=lineup.join('|');
-  // Drop stale names
-  lineup=lineup.filter(n=>rosterSet.has(n));
-  // Append any roster names missing from lineup, in roster order
-  const inLineup=new Set(lineup);
-  roster.forEach(n=>{ if(!inLineup.has(n)) lineup.push(n); });
-  team.lineup=lineup;
-  return lineup.join('|')!==before;
-}
-
-// getPlayers — returns the lineup-only player list in lineup order. This is
-// what generate() consumes, so the rotation algorithm sees exactly the players
-// in the user's batting order and skips anyone they've removed from the lineup.
-function getPlayers(){
-  const all=_readRosterFromDOM();
-  const byName=Object.fromEntries(all.map(p=>[p.name,p]));
-  const lineup=getLineupNames();
-  return lineup.map(n=>byName[n]).filter(Boolean);
-}
-
-/* =================================================================
-   LINEUP PANEL — chart-page UI for tonight's batting order
-   ================================================================= */
-
-function renderLineupPanel(){
-  const list=document.getElementById('lineupList');
-  const title=document.getElementById('lineupTitle');
-  if(!list) return;
-  const lineup=getLineupNames();
-  const rosterAll=_readRosterFromDOM().map(p=>p.name);
-  if(title) title.textContent=`Today's Lineup (${lineup.length} of ${rosterAll.length})`;
-  if(lineup.length===0){
-    list.innerHTML=`<div class="lineup-empty">No players in tonight's lineup — tap "Add player to lineup" below to build it.</div>`;
-    return;
-  }
-  let html='';
-  lineup.forEach((name,i)=>{
-    html+=`<div class="lineup-row" draggable="true" data-name="${_esc(name)}" data-idx="${i}">
-      <div class="lineup-handle" title="Drag to reorder">${i+1}</div>
-      <div class="lineup-name">${_esc(name)}</div>
-      <button class="lineup-remove" onclick="removeFromLineup('${name.replace(/'/g,"\\'")}')" title="Remove from tonight's lineup">&times;</button>
-    </div>`;
-  });
-  list.innerHTML=html;
-  // Wire up drag handlers (desktop) + touch drag (iOS) for each row
-  list.querySelectorAll('.lineup-row').forEach(attachLineupDrag);
-}
-
-// Desktop HTML5 drag-and-drop + iOS touch drag, modeled on the roster
-// reorder code so the behavior feels identical between the two screens.
-let _draggedLineup=null;
-function attachLineupDrag(row){
-  row.addEventListener('dragstart',e=>{
-    const tag=e.target.tagName;
-    if(tag==='INPUT'||tag==='BUTTON'||tag==='TEXTAREA'||tag==='SELECT'){
-      e.preventDefault(); return;
-    }
-    _draggedLineup=row;
-    row.classList.add('dragging');
-    e.dataTransfer.effectAllowed='move';
-    try{e.dataTransfer.setData('text/plain','');}catch(_){}
-  });
-  row.addEventListener('dragend',()=>{
-    row.classList.remove('dragging');
-    document.querySelectorAll('.lineup-row').forEach(r=>r.classList.remove('drop-above','drop-below'));
-    _draggedLineup=null;
-    commitLineupOrderFromDOM();
-  });
-  row.addEventListener('dragover',e=>{
-    if(!_draggedLineup||_draggedLineup===row) return;
-    e.preventDefault();
-    e.dataTransfer.dropEffect='move';
-    const rect=row.getBoundingClientRect();
-    const above=e.clientY<rect.top+rect.height/2;
-    row.classList.toggle('drop-above',above);
-    row.classList.toggle('drop-below',!above);
-  });
-  row.addEventListener('dragleave',()=>{
-    row.classList.remove('drop-above','drop-below');
-  });
-  row.addEventListener('drop',e=>{
-    e.preventDefault();
-    row.classList.remove('drop-above','drop-below');
-    if(!_draggedLineup||_draggedLineup===row) return;
-    const rect=row.getBoundingClientRect();
-    const above=e.clientY<rect.top+rect.height/2;
-    if(above){row.parentNode.insertBefore(_draggedLineup,row);}
-    else{row.parentNode.insertBefore(_draggedLineup,row.nextSibling);}
-  });
-  // Touch drag for iOS — long-press on the gold number badge.
-  attachLineupTouchDrag(row);
-}
-
-function attachLineupTouchDrag(row){
-  const handle=row.querySelector('.lineup-handle');
-  if(!handle) return;
-  let pressTimer=null,dragging=false,startY=0;
-  handle.addEventListener('touchstart',e=>{
-    startY=e.touches[0].clientY;
-    pressTimer=setTimeout(()=>{
-      dragging=true;
-      _draggedLineup=row;
-      row.classList.add('dragging');
-      if(navigator.vibrate) try{navigator.vibrate(30);}catch(_){}
-    },300);
-  },{passive:true});
-  handle.addEventListener('touchmove',e=>{
-    if(pressTimer && Math.abs(e.touches[0].clientY-startY)>10){
-      clearTimeout(pressTimer); pressTimer=null;
-    }
-    if(!dragging) return;
-    e.preventDefault();
-    const t=e.touches[0];
-    const el=document.elementFromPoint(t.clientX,t.clientY);
-    const targetRow=el && el.closest('.lineup-row');
-    document.querySelectorAll('.lineup-row').forEach(r=>r.classList.remove('drop-above','drop-below'));
-    if(targetRow && targetRow!==row){
-      const rect=targetRow.getBoundingClientRect();
-      const above=t.clientY<rect.top+rect.height/2;
-      targetRow.classList.toggle('drop-above',above);
-      targetRow.classList.toggle('drop-below',!above);
-    }
-  },{passive:false});
-  const finish=e=>{
-    if(pressTimer){clearTimeout(pressTimer);pressTimer=null;}
-    if(!dragging) return;
-    const t=(e.changedTouches&&e.changedTouches[0])||{};
-    const el=t.clientX!=null?document.elementFromPoint(t.clientX,t.clientY):null;
-    const targetRow=el && el.closest('.lineup-row');
-    if(targetRow && targetRow!==row){
-      const rect=targetRow.getBoundingClientRect();
-      const above=t.clientY<rect.top+rect.height/2;
-      if(above) targetRow.parentNode.insertBefore(row,targetRow);
-      else targetRow.parentNode.insertBefore(row,targetRow.nextSibling);
-    }
-    document.querySelectorAll('.lineup-row').forEach(r=>r.classList.remove('drop-above','drop-below'));
-    row.classList.remove('dragging');
-    dragging=false; _draggedLineup=null;
-    commitLineupOrderFromDOM();
-  };
-  handle.addEventListener('touchend',finish);
-  handle.addEventListener('touchcancel',finish);
-}
-
-// Read the new visual order out of the lineup panel and persist it. Re-renders
-// the panel (so numbers update) and re-runs generate() if a rotation exists.
-function commitLineupOrderFromDOM(){
-  const list=document.getElementById('lineupList');
-  if(!list) return;
-  const names=Array.from(list.querySelectorAll('.lineup-row')).map(r=>r.getAttribute('data-name')||'');
-  const cleaned=names.filter(Boolean);
-  setLineupNames(cleaned);
-  renderLineupPanel();
-  if(lastResult) generate();
-}
-
-function removeFromLineup(name){
-  const cur=getLineupNames().filter(n=>n!==name);
-  setLineupNames(cur);
-  renderLineupPanel();
-  if(lastResult) generate();
-}
-
-function resetLineup(){
-  const roster=_readRosterFromDOM().map(p=>p.name);
-  setLineupNames(roster);
-  renderLineupPanel();
-  if(lastResult) generate();
-}
-
-// Modal listing every roster player NOT currently in the lineup. Tapping one
-// appends them to the end of the lineup (the user can drag to reorder after).
-async function openAddToLineup(){
-  const roster=_readRosterFromDOM().map(p=>p.name);
-  const inLineup=new Set(getLineupNames());
-  const candidates=roster.filter(n=>!inLineup.has(n));
-  if(candidates.length===0){
-    await uiAlert('Every roster player is already in tonight\'s lineup. To add new players to the roster, use the Roster tab.');
-    return;
-  }
-  const bodyHTML=candidates.map(n=>`
-    <div class="add-lineup-option">
-      <span>${_esc(n)}</span>
-      <button data-add-name="${_esc(n)}">+ Add</button>
-    </div>`).join('');
-  await _modalShow({
-    msg:`Pick a roster player to add to tonight's lineup (${candidates.length} available):`,
-    wide:true,
-    bodyHTML,
-    onShow:()=>{
-      document.querySelectorAll('[data-add-name]').forEach(btn=>{
-        btn.addEventListener('click',()=>{
-          const name=btn.getAttribute('data-add-name')||'';
-          if(!name) return;
-          const cur=getLineupNames();
-          if(!cur.includes(name)) cur.push(name);
-          setLineupNames(cur);
-          // Close modal, refresh panel, regenerate
-          _modalResolve(true);
-          renderLineupPanel();
-          if(lastResult) generate();
-        });
-      });
-    },
-    buttons:[{label:'Close',value:false,kind:'secondary'}]
-  });
+  return players;
 }
 
 let lastResult=null;
@@ -2356,15 +2025,13 @@ async function createTeam(){
   const name=await uiPrompt('Team name:','');
   if(!name||!name.trim()) return;
   const id=genId();
-  DATA.teams[id]={name:name.trim(),roster:null,games:[],manualCells:[],lineup:[]};
+  DATA.teams[id]={name:name.trim(),roster:null,games:[],manualCells:[]};
   DATA.currentTeamId=id;
   manualCells=[];
   saveData();
   refreshTeamUI();
   document.getElementById('rosterRows').innerHTML='';
   for(let i=0;i<11;i++) addRow();
-  reconcileLineupWithRoster();
-  renderLineupPanel();
 }
 
 async function renameTeam(){
@@ -2394,8 +2061,6 @@ async function deleteTeam(){
     manualCells=[];
   }
   syncOFLabels();
-  reconcileLineupWithRoster();
-  renderLineupPanel();
   refreshTeamUI();
 }
 
@@ -2408,8 +2073,6 @@ function selectTeam(id){
   loadManualCells(t.manualCells||t.locks||[]);
   loadRulesIntoForm(t.rules);
   syncOFLabels();
-  reconcileLineupWithRoster();
-  renderLineupPanel();
   refreshTeamUI();
 }
 
@@ -2441,9 +2104,7 @@ async function saveRoster(){
   DATA.teams[DATA.currentTeamId].roster=roster;
   DATA.teams[DATA.currentTeamId].manualCells=manualCells.slice();
   DATA.teams[DATA.currentTeamId].rules=rules;
-  reconcileLineupWithRoster();
   saveData();
-  renderLineupPanel();
   flashMsg(`Roster saved (${roster.filter(p=>p.name.trim()).length} players, ${manualCells.length} manual pick${manualCells.length===1?'':'s'}).`,'success');
 }
 
@@ -2943,8 +2604,6 @@ async function importData(){
     manualCells=[];
   }
   syncOFLabels();
-  reconcileLineupWithRoster();
-  renderLineupPanel();
   refreshTeamUI();
   flashMsg(`Imported ${teamCount} team(s) and ${gameCount} game(s).`,'success');
 }
@@ -2995,19 +2654,6 @@ if(DATA.currentTeamId && DATA.teams[DATA.currentTeamId] && DATA.teams[DATA.curre
 }
 syncOFLabels();
 document.getElementById('ruleUse4OF')?.addEventListener('change',syncOFLabels);
-// Initialize the lineup panel — fills in any missing names so brand-new teams
-// (or upgrades from a build without the lineup feature) get a sensible default
-// of "every roster player in roster order."
-reconcileLineupWithRoster();
-renderLineupPanel();
-// Re-render the panel whenever the user types a name into a roster card — this
-// catches renames in real time so the lineup label updates without a tab switch.
-document.getElementById('rosterRows')?.addEventListener('input',e=>{
-  if(e.target && e.target.classList && e.target.classList.contains('pc-name')){
-    // Defer reconcile until next tick so the new value is captured by the DOM read
-    setTimeout(()=>{ reconcileLineupWithRoster(); renderLineupPanel(); },0);
-  }
-});
 refreshTeamUI();
 showScreen('roster');
 </script>
